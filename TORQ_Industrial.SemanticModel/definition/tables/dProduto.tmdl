@@ -1,0 +1,61 @@
+/// Dimensão de produtos (SKU).
+table dProduto
+	lineageTag: 3ef2a9e3-6f69-51fe-8cdf-7cf62aac4645
+
+	/// Código do produto (chave).
+	column SKU
+		dataType: string
+		isKey
+		lineageTag: 76e4a8cd-123b-5e57-9306-bad5d4e84036
+		summarizeBy: none
+		sourceColumn: SKU
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Nome do produto.
+	column Produto
+		dataType: string
+		lineageTag: 0dab34b6-e35b-5c60-b9ec-3777ab94afc6
+		summarizeBy: none
+		sourceColumn: Produto
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Categoria do produto: Motores, Bombas, Redutores, Paineis, Valvulas.
+	column Categoria
+		dataType: string
+		lineageTag: 0d72513c-08cb-5ee0-8922-69a7bf38bcc6
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Família do produto (A–E).
+	column 'Família'
+		dataType: string
+		lineageTag: 9e20e4a6-d967-5ee5-9461-787de6598198
+		summarizeBy: none
+		sourceColumn: Família
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Tempo de ciclo padrão em segundos.
+	column 'Ciclo Padrão (s)'
+		dataType: double
+		formatString: 0
+		lineageTag: f9142d36-d8ab-5a31-a240-e19fff2bff09
+		summarizeBy: none
+		sourceColumn: Ciclo Padrão (s)
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dProduto = m
+		mode: import
+		source =
+				let
+					Fonte = Table.Distinct(Table.SelectColumns(Base, {"sku", "produto", "categoria_produto", "familia_produto", "ciclo_padrao_seg"})),
+					Renomeadas = Table.RenameColumns(Fonte, {{"sku", "SKU"}, {"produto", "Produto"}, {"categoria_produto", "Categoria"}, {"familia_produto", "Família"}, {"ciclo_padrao_seg", "Ciclo Padrão (s)"}}),
+					Ordenada = Table.Sort(Renomeadas, {{"SKU", Order.Ascending}})
+				in
+					Ordenada
+

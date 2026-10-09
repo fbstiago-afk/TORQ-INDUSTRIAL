@@ -1,0 +1,88 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.2.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU10",
+      "reportVersionAtImport": {
+        "visual": "2.8.0",
+        "report": "3.2.0",
+        "page": "2.1.0"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "TORQ_Industrial.json",
+      "reportVersionAtImport": {
+        "visual": "2.8.0",
+        "report": "3.2.0",
+        "page": "2.1.0"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "visible": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY24SU10",
+          "path": "BaseThemes/CY24SU10.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "TORQ_Industrial.json",
+          "path": "TORQ_Industrial.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "torq_logo.png",
+          "path": "torq_logo.png",
+          "type": "Image"
+        },
+        {
+          "name": "torq_fundo.png",
+          "path": "torq_fundo.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultFilterActionIsDataFilter": true,
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "allowInlineExploration": false,
+    "useEnhancedTooltips": true
+  }
+}

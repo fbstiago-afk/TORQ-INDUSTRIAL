@@ -1,0 +1,42 @@
+/// Dimensão de clientes.
+table dCliente
+	lineageTag: 11355cf7-1fec-5df5-9a2d-6ff32f737db6
+
+	column 'ID Cliente'
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: 2ade9c9c-9eaa-535c-853c-da1eab9ec1e5
+		summarizeBy: none
+		sourceColumn: ID Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Nome do cliente.
+	column Cliente
+		dataType: string
+		lineageTag: f157203b-8d12-5837-986a-b3bc806704b5
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Segmento de mercado do cliente.
+	column Segmento
+		dataType: string
+		lineageTag: fe6c3c4f-040e-5328-8a8f-cc7f2345b917
+		summarizeBy: none
+		sourceColumn: Segmento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCliente = m
+		mode: import
+		source =
+				let
+					Fonte = Table.Distinct(Table.SelectColumns(Base, {"id_cliente", "cliente", "segmento_cliente"})),
+					Renomeadas = Table.RenameColumns(Fonte, {{"id_cliente", "ID Cliente"}, {"cliente", "Cliente"}, {"segmento_cliente", "Segmento"}}),
+					Ordenada = Table.Sort(Renomeadas, {{"ID Cliente", Order.Ascending}})
+				in
+					Ordenada
+

@@ -1,0 +1,29 @@
+expression PastaProjeto = "E:\Projetos BI\08 - Industria TORQ INDUSTRIAL\" meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]
+	lineageTag: 9df5f5f3-fadb-5336-b0fa-0b5520278f6e
+
+	annotation PBI_ResultType = Text
+
+/// Consulta base (staging, não carregada): lê o CSV, tipa as colunas e cria as chaves e colunas auxiliares usadas pelas tabelas do modelo.
+expression Base =
+		let
+			Fonte = Csv.Document(File.Contents(PastaProjeto & "base_industria_manufatura_2_anos.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+			Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars = true]),
+			Tipos = Table.TransformColumnTypes(Cabecalho, {{"data", type date}, {"ano", Int64.Type}, {"mes_num", Int64.Type}, {"demanda_qtd", Int64.Type}, {"qtd_produzida", Int64.Type}, {"qtd_boa", Int64.Type}, {"qtd_refugo", Int64.Type}, {"qtd_retrabalho", Int64.Type}, {"lead_time_previsto_dias", Int64.Type}, {"lead_time_real_dias", Int64.Type}, {"atraso_fornecedor_dias", Int64.Type}, {"lote_mp_recebido", Int64.Type}, {"lote_mp_reprovado", Int64.Type}, {"estoque_inicial_mp", Int64.Type}, {"recebimento_mp", Int64.Type}, {"consumo_mp", Int64.Type}, {"estoque_final_mp", Int64.Type}, {"estoque_seguranca_mp", Int64.Type}, {"prazo_cliente_dias", Int64.Type}, {"atraso_entrega_dias", Int64.Type}, {"taxa_defeito_pct", type number}, {"horas_planejadas", type number}, {"horas_operando", type number}, {"horas_parada", type number}, {"horas_setup", type number}, {"horas_manutencao", type number}, {"horas_falta_material", type number}, {"disponibilidade_pct", type number}, {"performance_pct", type number}, {"qualidade_pct", type number}, {"oee_pct", type number}, {"ciclo_padrao_seg", type number}, {"custo_unit_mp", type number}, {"custo_unit_mao_obra", type number}, {"custo_unit_energia", type number}, {"custo_refugo", type number}, {"custo_retrabalho", type number}, {"custo_total_op", type number}, {"custo_frete", type number}}, "en-US"),
+			LinhaKey = Table.AddColumn(Tipos, "linha_key", each [planta] & "|" & [linha], type text),
+			HorasRitmo = Table.AddColumn(LinhaKey, "horas_ritmo_padrao", each [horas_operando] * [performance_pct] / 100, type number),
+			CustoMP = Table.AddColumn(HorasRitmo, "custo_mp", each [custo_unit_mp] * [qtd_produzida], type number),
+			CustoMO = Table.AddColumn(CustoMP, "custo_mao_obra", each [custo_unit_mao_obra] * [qtd_produzida], type number),
+			CustoEn = Table.AddColumn(CustoMO, "custo_energia", each [custo_unit_energia] * [qtd_produzida], type number),
+			NoPrazo = Table.AddColumn(CustoEn, "fornecedor_no_prazo_flag", each if [fornecedor_no_prazo] = "Sim" then 1 else 0, Int64.Type),
+			Otif = Table.AddColumn(NoPrazo, "otif_flag", each if [otif] = "Sim" then 1 else 0, Int64.Type),
+			Ruptura = Table.AddColumn(Otif, "ruptura_flag", each if [ruptura_estoque] = "Sim" then 1 else 0, Int64.Type),
+			Abaixo = Table.AddColumn(Ruptura, "abaixo_seguranca_flag", each if [estoque_final_mp] < [estoque_seguranca_mp] then 1 else 0, Int64.Type),
+			Status = Table.AddColumn(Abaixo, "status_estoque", each let r = [estoque_final_mp] / [estoque_seguranca_mp] in if r < 1 then "1 · CRÍTICO" else if r < 1.5 then "2 · ATENÇÃO" else if r <= 5 then "3 · SAUDÁVEL" else "4 · EXCESSO", type text)
+		in
+			Status
+	lineageTag: 75cd68f0-2af5-54ea-9b0f-3747f1a38b96
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,42 @@
+/// Dimensão de fornecedores de matéria-prima.
+table dFornecedor
+	lineageTag: f1c8364c-feec-5b28-8f5e-b674275989f5
+
+	column 'ID Fornecedor'
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: 17458d98-869f-58ad-baaf-fec2aca1bfc5
+		summarizeBy: none
+		sourceColumn: ID Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Nome do fornecedor.
+	column Fornecedor
+		dataType: string
+		lineageTag: 045a93ad-3fb3-5c82-9452-c13aa594972a
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Estado do fornecedor.
+	column UF
+		dataType: string
+		lineageTag: 5d1b8b87-e68c-5848-ac44-ee5a7a3bb560
+		summarizeBy: none
+		sourceColumn: UF
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dFornecedor = m
+		mode: import
+		source =
+				let
+					Fonte = Table.Distinct(Table.SelectColumns(Base, {"id_fornecedor", "fornecedor", "uf_fornecedor"})),
+					Renomeadas = Table.RenameColumns(Fonte, {{"id_fornecedor", "ID Fornecedor"}, {"fornecedor", "Fornecedor"}, {"uf_fornecedor", "UF"}}),
+					Ordenada = Table.Sort(Renomeadas, {{"ID Fornecedor", Order.Ascending}})
+				in
+					Ordenada
+

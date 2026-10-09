@@ -1,0 +1,45 @@
+/// Tabela desconectada com os temas de alerta do painel ATENÇÃO AGORA e seus pesos de criticidade.
+table Alertas
+	lineageTag: 5fa00ed6-ed72-5e30-b333-03c2ab93a11e
+
+	column ID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8867e68f-6dfb-57a0-94eb-a16767e2d65d
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Tema do alerta de exceção.
+	column Alerta
+		dataType: string
+		lineageTag: 73c5242c-7453-5593-9b34-f4ceb552d894
+		summarizeBy: none
+		sourceColumn: Alerta
+		sortByColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Peso de criticidade do tema (parâmetro gerencial, 0–1).
+	column Peso
+		dataType: double
+		isHidden
+		formatString: 0.00
+		lineageTag: 6da5cf83-64fe-5b5e-a3cb-26b21abcc6ae
+		summarizeBy: none
+		sourceColumn: Peso
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Alertas = m
+		mode: import
+		source =
+				let
+					Fonte = #table(type table [ID = Int64.Type, Alerta = text, Peso = number], {
+						{1, "OEE", 0.9}, {2, "Downtime", 0.8}, {3, "Scrap", 0.8}, {4, "Estoque de MP", 0.8},
+						{5, "Fornecedor", 0.7}, {6, "Ruptura", 1.0}, {7, "OTIF", 0.9}, {8, "Não qualidade", 0.7}})
+				in
+					Fonte
+

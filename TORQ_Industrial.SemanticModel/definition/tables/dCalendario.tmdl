@@ -1,0 +1,136 @@
+/// Calendário contínuo cobrindo todo o histórico da base. Marcado como tabela de datas.
+table dCalendario
+	lineageTag: a049b1e4-568f-58df-b9a7-88382c7f5a97
+	dataCategory: Time
+
+	/// Data (chave do calendário).
+	column Data
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: e2b75c61-c3ff-5e17-9c30-99b8d221a32d
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Ano.
+	column Ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 13636b56-97a3-5cd3-8c98-e5235d228d6b
+		summarizeBy: none
+		sourceColumn: Ano
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Trimestre (T1–T4).
+	column Trimestre
+		dataType: string
+		lineageTag: 90443ff5-aa45-5837-afcb-76b9c0420646
+		summarizeBy: none
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês Num'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 58cfb625-81e9-53d1-bee2-1b44bda80c31
+		summarizeBy: none
+		sourceColumn: Mês Num
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Nome abreviado do mês.
+	column 'Mês'
+		dataType: string
+		lineageTag: f90d8f06-796e-53e5-b65e-011436a2ca6d
+		summarizeBy: none
+		sourceColumn: Mês
+		sortByColumn: 'Mês Num'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'AnoMês Num'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 896a0ef3-528e-570e-a43f-999234448589
+		summarizeBy: none
+		sourceColumn: AnoMês Num
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Mês e ano (ex.: out/24), ordenado cronologicamente.
+	column 'Mês/Ano'
+		dataType: string
+		lineageTag: f785ef29-a099-553d-8cfe-880d2c691ef9
+		summarizeBy: none
+		sourceColumn: Mês/Ano
+		sortByColumn: 'AnoMês Num'
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Primeiro dia do mês.
+	column 'Início Mês'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 722cc607-41c8-593a-a92d-cf4ac2b85994
+		summarizeBy: none
+		sourceColumn: Início Mês
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Número da semana do ano.
+	column 'Semana ISO'
+		dataType: int64
+		formatString: 0
+		lineageTag: cd8215c0-7140-59a4-9f1a-5bf8e9b63b7c
+		summarizeBy: none
+		sourceColumn: Semana ISO
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia Semana Num'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 39083712-5d59-5ab2-af64-ec4f8c892b17
+		summarizeBy: none
+		sourceColumn: Dia Semana Num
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Dia da semana abreviado.
+	column 'Dia da Semana'
+		dataType: string
+		lineageTag: 5a18ab24-3228-5994-9bb4-374c16034ba9
+		summarizeBy: none
+		sourceColumn: Dia da Semana
+		sortByColumn: 'Dia Semana Num'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendario = m
+		mode: import
+		source =
+				let
+					Inicio = Date.StartOfMonth(List.Min(Base[data])),
+					Fim = Date.EndOfMonth(List.Max(Base[data])),
+					Datas = List.Dates(Inicio, Duration.Days(Fim - Inicio) + 1, #duration(1, 0, 0, 0)),
+					Tabela = Table.FromList(Datas, Splitter.SplitByNothing(), type table [Data = date]),
+					Ano = Table.AddColumn(Tabela, "Ano", each Date.Year([Data]), Int64.Type),
+					Trimestre = Table.AddColumn(Ano, "Trimestre", each "T" & Text.From(Date.QuarterOfYear([Data])), type text),
+					MesNum = Table.AddColumn(Trimestre, "Mês Num", each Date.Month([Data]), Int64.Type),
+					Mes = Table.AddColumn(MesNum, "Mês", each {"jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"}{[Mês Num] - 1}, type text),
+					AnoMesNum = Table.AddColumn(Mes, "AnoMês Num", each [Ano] * 100 + [Mês Num], Int64.Type),
+					MesAno = Table.AddColumn(AnoMesNum, "Mês/Ano", each [Mês] & "/" & Text.End(Text.From([Ano]), 2), type text),
+					InicioMes = Table.AddColumn(MesAno, "Início Mês", each Date.StartOfMonth([Data]), type date),
+					Semana = Table.AddColumn(InicioMes, "Semana ISO", each Date.WeekOfYear([Data], Day.Monday), Int64.Type),
+					DiaNum = Table.AddColumn(Semana, "Dia Semana Num", each Date.DayOfWeek([Data], Day.Monday) + 1, Int64.Type),
+					Dia = Table.AddColumn(DiaNum, "Dia da Semana", each {"seg", "ter", "qua", "qui", "sex", "sáb", "dom"}{[Dia Semana Num] - 1}, type text)
+				in
+					Dia
+

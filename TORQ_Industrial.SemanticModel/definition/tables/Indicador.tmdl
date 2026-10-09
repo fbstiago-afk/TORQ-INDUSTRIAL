@@ -1,0 +1,53 @@
+/// Field parameter: indicador exibido no explorador da página Produção & Eficiência.
+table Indicador
+	lineageTag: 8933a68f-e64a-5a70-a3c3-20bf428672ed
+
+	column Indicador
+		lineageTag: 6da438e3-2251-58bb-96df-6932bc6254c2
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Indicador Ordem'
+
+		relatedColumnDetails
+			groupByColumn: 'Indicador Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Indicador Campos'
+		isHidden
+		lineageTag: 94374e77-ad80-5f5e-8fa5-99926e3fd57c
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Indicador Ordem'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Indicador Ordem'
+		isHidden
+		formatString: 0
+		lineageTag: a9424e7b-4876-5a8e-b593-53ab7032e0b6
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Indicador = calculated
+		mode: import
+		source =
+				{
+				    ("Produção", NAMEOF([Produção Real]), 0),
+				    ("OEE", NAMEOF([OEE %]), 1),
+				    ("Disponibilidade", NAMEOF([Disponibilidade %]), 2),
+				    ("Performance", NAMEOF([Performance %]), 3),
+				    ("Qualidade", NAMEOF([Qualidade %]), 4),
+				    ("Scrap", NAMEOF([Scrap %]), 5),
+				    ("Downtime", NAMEOF([Downtime %]), 6),
+				    ("Custo por unidade boa", NAMEOF([Custo por Unidade Boa]), 7)
+				}
+

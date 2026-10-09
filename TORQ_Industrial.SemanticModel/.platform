@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "TORQ_Industrial"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5483422a-a3fe-5b4f-a9ae-f49a53980250"
+  }
+}

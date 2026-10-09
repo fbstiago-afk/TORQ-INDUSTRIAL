@@ -1,0 +1,35 @@
+/// Dimensão de causa principal de defeito da OP.
+table dCausaDefeito
+	lineageTag: b80934bf-7145-56fd-ab5d-af7e2e7b0444
+
+	/// Causa principal de defeito registrada na OP.
+	column 'Causa Defeito'
+		dataType: string
+		isKey
+		lineageTag: 686f75e6-7aac-57ad-96bd-2e82f0e1d3e9
+		summarizeBy: none
+		sourceColumn: Causa Defeito
+
+		annotation SummarizationSetBy = Automatic
+
+	/// 1 quando há causa identificada; 0 para 'Sem defeito relevante'.
+	column Relevante
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 447f472e-f11a-5806-818d-bc4782722e7f
+		summarizeBy: none
+		sourceColumn: Relevante
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCausaDefeito = m
+		mode: import
+		source =
+				let
+					Fonte = Table.Distinct(Table.SelectColumns(Base, {"causa_defeito"})),
+					Renomeadas = Table.RenameColumns(Fonte, {{"causa_defeito", "Causa Defeito"}}),
+					Relevante = Table.AddColumn(Renomeadas, "Relevante", each if [Causa Defeito] = "Sem defeito relevante" then 0 else 1, Int64.Type)
+				in
+					Relevante
+

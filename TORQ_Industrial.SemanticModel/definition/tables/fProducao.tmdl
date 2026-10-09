@@ -1,0 +1,473 @@
+/// Fato de ordens de produção: uma linha por OP, com volumes, horas, custos, suprimento de matéria-prima e entrega ao cliente.
+table fProducao
+	lineageTag: 82546608-fb72-5a8a-8090-7eb3da07e286
+
+	column Data
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		lineageTag: b2ea4005-e802-5cae-b06b-5b7248c5daa5
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Identificador único da ordem de produção (granularidade da fato).
+	column 'Ordem de Produção'
+		dataType: string
+		lineageTag: 1f678088-6432-546e-846b-f31a10294296
+		summarizeBy: none
+		sourceColumn: Ordem de Produção
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Status da ordem: Concluida ou Parcial.
+	column 'Status OP'
+		dataType: string
+		lineageTag: 6d47ee95-f175-53d7-b0c0-4fa238aac20e
+		summarizeBy: none
+		sourceColumn: Status OP
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Classificação da posição de estoque de MP na OP: CRÍTICO (< segurança), ATENÇÃO (até 1,5×), SAUDÁVEL (1,5× a 5×), EXCESSO (> 5× o estoque de segurança).
+	column 'Status Estoque OP'
+		dataType: string
+		lineageTag: 952875dc-e363-52c4-9aeb-799519b00282
+		summarizeBy: none
+		sourceColumn: Status Estoque OP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Linha Key'
+		dataType: string
+		isHidden
+		lineageTag: 483b0b6a-1459-56b0-a44c-8b44d83981c2
+		summarizeBy: none
+		sourceColumn: Linha Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Turno Key'
+		dataType: string
+		isHidden
+		lineageTag: c49c9ba1-7571-564d-a612-4d392592937f
+		summarizeBy: none
+		sourceColumn: Turno Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SKU Key'
+		dataType: string
+		isHidden
+		lineageTag: 1654823f-0334-5105-9c80-81b3bb1496dd
+		summarizeBy: none
+		sourceColumn: SKU Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cliente Key'
+		dataType: string
+		isHidden
+		lineageTag: c2b814e2-8309-5122-82f7-8f5eeba92361
+		summarizeBy: none
+		sourceColumn: Cliente Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor Key'
+		dataType: string
+		isHidden
+		lineageTag: 7e6e223c-68ff-5d06-b681-a7e0abf5b05b
+		summarizeBy: none
+		sourceColumn: Fornecedor Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Matéria-Prima Key'
+		dataType: string
+		isHidden
+		lineageTag: e57bf47a-3104-5435-9354-ac4a49b15a9f
+		summarizeBy: none
+		sourceColumn: Matéria-Prima Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Causa Parada Key'
+		dataType: string
+		isHidden
+		lineageTag: 09ca4d8e-dbf5-5de2-b59a-8ee66c1b47d5
+		summarizeBy: none
+		sourceColumn: Causa Parada Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Causa Defeito Key'
+		dataType: string
+		isHidden
+		lineageTag: 89ad3bfb-a3ea-5a2f-8dbb-ceed835c775a
+		summarizeBy: none
+		sourceColumn: Causa Defeito Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Demanda Qtd'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: fd2b44b9-bfe9-59e1-807f-ced4aab89409
+		summarizeBy: sum
+		sourceColumn: Demanda Qtd
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtd Produzida'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 49083bf3-9018-5147-8a4f-31d379286729
+		summarizeBy: sum
+		sourceColumn: Qtd Produzida
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtd Boa'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d5eafe31-af96-5ea6-b4b6-e8cf013b5657
+		summarizeBy: sum
+		sourceColumn: Qtd Boa
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtd Refugo'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 692af478-7880-5e8b-8d88-5254a6fa1d96
+		summarizeBy: sum
+		sourceColumn: Qtd Refugo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtd Retrabalho'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7fe9f0b1-036c-5fd3-8148-46f52f7074b2
+		summarizeBy: sum
+		sourceColumn: Qtd Retrabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Lead Time Previsto'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 30a5f09a-776b-525c-a43d-43790ca343ba
+		summarizeBy: sum
+		sourceColumn: Lead Time Previsto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Lead Time Real'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 76d9eae2-6ee4-5c40-914d-09532ea494fb
+		summarizeBy: sum
+		sourceColumn: Lead Time Real
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Atraso Fornecedor Dias'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 42423f48-60a3-56b7-8b96-3e5c4149302f
+		summarizeBy: sum
+		sourceColumn: Atraso Fornecedor Dias
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor No Prazo'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8fd13897-5a6e-54e2-9986-de02e9f95745
+		summarizeBy: sum
+		sourceColumn: Fornecedor No Prazo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Lote MP Recebido'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6fa8b2cb-2490-57d5-81e9-14499f379e2c
+		summarizeBy: sum
+		sourceColumn: Lote MP Recebido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Lote MP Reprovado'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 42bdaddf-477b-5e11-9a94-a2abdb3a1a5e
+		summarizeBy: sum
+		sourceColumn: Lote MP Reprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Estoque Inicial MP'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 46ee682e-7ac1-509a-a8f0-93f77dc7401f
+		summarizeBy: sum
+		sourceColumn: Estoque Inicial MP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Recebimento MP'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6aacaf3b-1084-53c1-844f-d9fd94b13567
+		summarizeBy: sum
+		sourceColumn: Recebimento MP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Consumo MP'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ed680699-5464-5f47-bb4e-ce45c9eda577
+		summarizeBy: sum
+		sourceColumn: Consumo MP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Estoque Final MP'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 075291e1-539f-5a62-9a40-8b0b8607c5f8
+		summarizeBy: sum
+		sourceColumn: Estoque Final MP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Estoque Segurança MP'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c285ffbd-7c76-5195-895f-63652cf3ee91
+		summarizeBy: sum
+		sourceColumn: Estoque Segurança MP
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ruptura
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0644d682-46ed-52ab-bd87-eb9de9e1addd
+		summarizeBy: sum
+		sourceColumn: Ruptura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Abaixo Segurança'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b15792d1-e04a-5702-bb03-afc22c78c7b2
+		summarizeBy: sum
+		sourceColumn: Abaixo Segurança
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo Cliente Dias'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 86bbfb69-c88c-514a-aae6-477282818f2b
+		summarizeBy: sum
+		sourceColumn: Prazo Cliente Dias
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Atraso Entrega Dias'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d4497e52-e31a-5b50-b369-f62fea779b8d
+		summarizeBy: sum
+		sourceColumn: Atraso Entrega Dias
+
+		annotation SummarizationSetBy = Automatic
+
+	column OTIF
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e2da8bb9-d2f5-5a3c-bdce-389eb0384ac9
+		summarizeBy: sum
+		sourceColumn: OTIF
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Planejadas'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 2804dfe3-aaac-54b1-80c7-e8509bf4e089
+		summarizeBy: sum
+		sourceColumn: Horas Planejadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Operando'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: f7a32199-7a12-5386-87a3-f60bb8b3e776
+		summarizeBy: sum
+		sourceColumn: Horas Operando
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Parada'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: f26fc9d8-0d9d-5119-8016-9fe57073cf1a
+		summarizeBy: sum
+		sourceColumn: Horas Parada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Setup'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: b743821a-a708-59ac-a06b-92d244141045
+		summarizeBy: sum
+		sourceColumn: Horas Setup
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Manutenção'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: da71b671-2946-525a-a1be-6b7fe7803db8
+		summarizeBy: sum
+		sourceColumn: Horas Manutenção
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Falta Material'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 8704326d-0068-58bb-b521-529c52cb3890
+		summarizeBy: sum
+		sourceColumn: Horas Falta Material
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Ritmo Padrão'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 1b89d688-1f5a-5ffc-8260-7c7b397d4b96
+		summarizeBy: sum
+		sourceColumn: Horas Ritmo Padrão
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Custo MP'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: cb57f01c-2cd3-5f0e-8733-076ccdad8658
+		summarizeBy: sum
+		sourceColumn: Custo MP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Custo Mão de Obra'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 97fce40a-df15-5225-88fc-769ab7912230
+		summarizeBy: sum
+		sourceColumn: Custo Mão de Obra
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Custo Energia'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 6f0cbca8-1acb-5737-af82-5698422ef703
+		summarizeBy: sum
+		sourceColumn: Custo Energia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Custo Refugo'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: a45eb312-e9e7-5401-8137-378d3cfb5e3c
+		summarizeBy: sum
+		sourceColumn: Custo Refugo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Custo Retrabalho'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: f5c1fce8-245b-58f2-b646-cf8984ffbff6
+		summarizeBy: sum
+		sourceColumn: Custo Retrabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Custo Total OP'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 75f4d69b-28c9-5044-a8f1-2c97f00398fc
+		summarizeBy: sum
+		sourceColumn: Custo Total OP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Custo Frete'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 30134382-ccdd-5f5c-be3a-f18d9a3b5f7d
+		summarizeBy: sum
+		sourceColumn: Custo Frete
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fProducao = m
+		mode: import
+		source =
+				let
+					Fonte = Base,
+					Colunas = Table.SelectColumns(Fonte, {"data", "ordem_producao", "status_op", "status_estoque", "linha_key", "turno", "sku", "id_cliente", "id_fornecedor", "id_materia_prima", "causa_parada", "causa_defeito", "demanda_qtd", "qtd_produzida", "qtd_boa", "qtd_refugo", "qtd_retrabalho", "lead_time_previsto_dias", "lead_time_real_dias", "atraso_fornecedor_dias", "fornecedor_no_prazo_flag", "lote_mp_recebido", "lote_mp_reprovado", "estoque_inicial_mp", "recebimento_mp", "consumo_mp", "estoque_final_mp", "estoque_seguranca_mp", "ruptura_flag", "abaixo_seguranca_flag", "prazo_cliente_dias", "atraso_entrega_dias", "otif_flag", "horas_planejadas", "horas_operando", "horas_parada", "horas_setup", "horas_manutencao", "horas_falta_material", "horas_ritmo_padrao", "custo_mp", "custo_mao_obra", "custo_energia", "custo_refugo", "custo_retrabalho", "custo_total_op", "custo_frete"}),
+					Renomeadas = Table.RenameColumns(Colunas, {{"data", "Data"}, {"ordem_producao", "Ordem de Produção"}, {"status_op", "Status OP"}, {"status_estoque", "Status Estoque OP"}, {"linha_key", "Linha Key"}, {"turno", "Turno Key"}, {"sku", "SKU Key"}, {"id_cliente", "Cliente Key"}, {"id_fornecedor", "Fornecedor Key"}, {"id_materia_prima", "Matéria-Prima Key"}, {"causa_parada", "Causa Parada Key"}, {"causa_defeito", "Causa Defeito Key"}, {"demanda_qtd", "Demanda Qtd"}, {"qtd_produzida", "Qtd Produzida"}, {"qtd_boa", "Qtd Boa"}, {"qtd_refugo", "Qtd Refugo"}, {"qtd_retrabalho", "Qtd Retrabalho"}, {"lead_time_previsto_dias", "Lead Time Previsto"}, {"lead_time_real_dias", "Lead Time Real"}, {"atraso_fornecedor_dias", "Atraso Fornecedor Dias"}, {"fornecedor_no_prazo_flag", "Fornecedor No Prazo"}, {"lote_mp_recebido", "Lote MP Recebido"}, {"lote_mp_reprovado", "Lote MP Reprovado"}, {"estoque_inicial_mp", "Estoque Inicial MP"}, {"recebimento_mp", "Recebimento MP"}, {"consumo_mp", "Consumo MP"}, {"estoque_final_mp", "Estoque Final MP"}, {"estoque_seguranca_mp", "Estoque Segurança MP"}, {"ruptura_flag", "Ruptura"}, {"abaixo_seguranca_flag", "Abaixo Segurança"}, {"prazo_cliente_dias", "Prazo Cliente Dias"}, {"atraso_entrega_dias", "Atraso Entrega Dias"}, {"otif_flag", "OTIF"}, {"horas_planejadas", "Horas Planejadas"}, {"horas_operando", "Horas Operando"}, {"horas_parada", "Horas Parada"}, {"horas_setup", "Horas Setup"}, {"horas_manutencao", "Horas Manutenção"}, {"horas_falta_material", "Horas Falta Material"}, {"horas_ritmo_padrao", "Horas Ritmo Padrão"}, {"custo_mp", "Custo MP"}, {"custo_mao_obra", "Custo Mão de Obra"}, {"custo_energia", "Custo Energia"}, {"custo_refugo", "Custo Refugo"}, {"custo_retrabalho", "Custo Retrabalho"}, {"custo_total_op", "Custo Total OP"}, {"custo_frete", "Custo Frete"}})
+				in
+					Renomeadas
+

@@ -1,0 +1,22 @@
+/// Parâmetro what-if: redução percentual de scrap.
+table 'Simulação Scrap'
+	lineageTag: f3c529ec-ebfa-58f7-8f54-41bb9cfb9f0d
+
+	/// Percentual de redução de scrap a simular (0–50%).
+	column 'Redução Scrap'
+		dataType: double
+		formatString: 0%
+		lineageTag: 2e4e2356-3263-5085-b5ad-84311899d56e
+		summarizeBy: none
+		sourceColumn: Redução Scrap
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Simulação Scrap' = m
+		mode: import
+		source =
+				let
+					Fonte = Table.FromList(List.Transform({0 .. 5}, each _ * 0.10), Splitter.SplitByNothing(), type table [Redução Scrap = number])
+				in
+					Fonte
+

@@ -1,0 +1,32 @@
+/// Tabela desconectada com os blocos da narrativa executiva.
+table Insight
+	lineageTag: 82225ba5-f7db-512f-b080-a678d4ac298c
+
+	column Ordem
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 175e84ec-f4e5-5339-88ff-adbde5d1c36f
+		summarizeBy: none
+		sourceColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Bloco da narrativa executiva.
+	column Bloco
+		dataType: string
+		lineageTag: 107a24b8-de0e-5038-95eb-52b8334225cb
+		summarizeBy: none
+		sourceColumn: Bloco
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Insight = m
+		mode: import
+		source =
+				let
+					Fonte = #table(type table [Ordem = Int64.Type, Bloco = text], {{1, "OBSERVAÇÃO"}, {2, "DIAGNÓSTICO"}, {3, "IMPACTO"}, {4, "AÇÃO"}})
+				in
+					Fonte
+

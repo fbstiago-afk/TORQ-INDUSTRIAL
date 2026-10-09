@@ -1,0 +1,32 @@
+/// Tabela desconectada com as etapas da ponte Capacidade teórica → Produção boa.
+table Ponte
+	lineageTag: ce0f5569-0456-5d0e-a433-17ef102ff46e
+
+	column Ordem
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1c68a897-676f-5593-a35b-58c2802cc384
+		summarizeBy: none
+		sourceColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Etapa da ponte de perdas de produção.
+	column Etapa
+		dataType: string
+		lineageTag: 32752271-9943-56e7-bf57-4c703b19d363
+		summarizeBy: none
+		sourceColumn: Etapa
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Ponte = m
+		mode: import
+		source =
+				let
+					Fonte = #table(type table [Ordem = Int64.Type, Etapa = text], {{1, "Capacidade teórica"}, {2, "Setup"}, {3, "Manutenção"}, {4, "Falta de material"}, {5, "Ritmo"}, {6, "Refugo"}})
+				in
+					Fonte
+

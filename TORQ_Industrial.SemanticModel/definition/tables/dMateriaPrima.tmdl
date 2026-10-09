@@ -1,0 +1,42 @@
+/// Dimensão de matérias-primas.
+table dMateriaPrima
+	lineageTag: 63d812a2-3ee2-5442-bd02-5b591f5c0d6b
+
+	column 'ID Matéria-Prima'
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: e62cd071-3b3c-5f9b-9a85-7161dedeccae
+		summarizeBy: none
+		sourceColumn: ID Matéria-Prima
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Nome da matéria-prima.
+	column 'Matéria-Prima'
+		dataType: string
+		lineageTag: 8516e95b-b71f-5127-9f9b-01b59f0b70c6
+		summarizeBy: none
+		sourceColumn: Matéria-Prima
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Grupo da matéria-prima.
+	column Grupo
+		dataType: string
+		lineageTag: db4753af-a50e-5ba5-9b35-545a8e3fb056
+		summarizeBy: none
+		sourceColumn: Grupo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dMateriaPrima = m
+		mode: import
+		source =
+				let
+					Fonte = Table.Distinct(Table.SelectColumns(Base, {"id_materia_prima", "materia_prima", "grupo_materia_prima"})),
+					Renomeadas = Table.RenameColumns(Fonte, {{"id_materia_prima", "ID Matéria-Prima"}, {"materia_prima", "Matéria-Prima"}, {"grupo_materia_prima", "Grupo"}}),
+					Ordenada = Table.Sort(Renomeadas, {{"ID Matéria-Prima", Order.Ascending}})
+				in
+					Ordenada
+

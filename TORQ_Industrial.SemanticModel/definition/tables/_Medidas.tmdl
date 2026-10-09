@@ -1,0 +1,1605 @@
+/// Tabela exclusiva de medidas, organizada em pastas.
+table _Medidas
+	lineageTag: 9504f70e-5663-5b1f-9ab0-170c37ca9931
+
+	/// Meta gerencial de OEE (85%). Parâmetro de gestão, não é dado observado na base.
+	measure 'Meta OEE' = 0.85
+		formatString: 0%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: f242e00d-c454-5812-961e-fd3866eb03f5
+
+	/// Meta gerencial de aderência ao plano (98%). Parâmetro de gestão.
+	measure 'Meta Aderência' = 0.98
+		formatString: 0%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: 0f7cbf0b-476e-5a25-b6c0-3560d49542b7
+
+	/// Meta gerencial de OTIF ao cliente (90%). Parâmetro de gestão.
+	measure 'Meta OTIF' = 0.90
+		formatString: 0%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: a7c876d3-4f39-5cf0-b507-4231b40ae86f
+
+	/// Meta gerencial de pontualidade de fornecedores (80%). Parâmetro de gestão.
+	measure 'Meta Fornecedor no Prazo' = 0.80
+		formatString: 0%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: 03bd9a63-2ab3-5f2b-bf66-1f3e322e358d
+
+	/// Limite gerencial de scrap (0,8% da produção). Parâmetro de gestão.
+	measure 'Limite Scrap' = 0.008
+		formatString: 0.0%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: 002adffd-9b59-5d71-92b5-92bfbdbb9a1d
+
+	/// Limite gerencial de downtime (15% das horas planejadas). Parâmetro de gestão.
+	measure 'Limite Downtime' = 0.15
+		formatString: 0%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: d103af45-a09a-5b95-a21e-f46d46efb9db
+
+	/// Limite gerencial do custo da não qualidade (0,70% do custo total). Parâmetro de gestão.
+	measure 'Limite CNQ' = 0.007
+		formatString: 0.00%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: 9ffb2789-5875-5335-b751-a461a124bf6f
+
+	/// Limite gerencial de reprovação de matéria-prima no recebimento (2%).
+	measure 'Limite Reprovação MP' = 0.02
+		formatString: 0.0%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: 2cc4075a-3ad8-50be-bcd7-30878c3db6a5
+
+	/// Limite gerencial: % de OPs com estoque final de MP abaixo do estoque de segurança (10%).
+	measure 'Limite OPs Abaixo Segurança' = 0.10
+		formatString: 0%
+		displayFolder: 00 | Metas e Limites (parâmetros gerenciais)
+		lineageTag: d14cb3f6-fec7-51e3-b5d8-7d61fb69c505
+
+	/// Quantidade total produzida (boa + refugo) nas ordens de produção.
+	measure 'Produção Real' = SUM(fProducao[Qtd Produzida])
+		formatString: #,0
+		displayFolder: 01 | Produção
+		lineageTag: 7a7631b3-156e-5d22-8016-738f6e62d8a1
+
+	/// Quantidade produzida aprovada (sem refugo).
+	measure 'Produção Boa' = SUM(fProducao[Qtd Boa])
+		formatString: #,0
+		displayFolder: 01 | Produção
+		lineageTag: ab8a75c5-2307-564e-bf06-eda3506a1012
+
+	/// Quantidade planejada/demandada nas ordens de produção (demanda_qtd).
+	measure Plano = SUM(fProducao[Demanda Qtd])
+		formatString: #,0
+		displayFolder: 01 | Produção
+		lineageTag: 20fd4d19-b94e-5b44-a34c-16d40d451917
+
+	/// Produção Real menos Plano. Negativo = produção abaixo do plano.
+	measure 'Gap Produção' = [Produção Real] - [Plano]
+		formatString: +#,0;-#,0;0
+		displayFolder: 01 | Produção
+		lineageTag: e5cd2907-f402-5032-8927-c8cf9ee28389
+
+	/// Produção Real dividida pelo Plano.
+	measure 'Aderência ao Plano %' = DIVIDE([Produção Real], [Plano])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 01 | Produção
+		lineageTag: 129a0037-b6df-52ee-814b-14a01ef71947
+
+	/// Produção Boa dividida pelo Plano: quanto da demanda foi atendido com produto aprovado.
+	measure 'Atendimento Produto Bom %' = DIVIDE([Produção Boa], [Plano])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 01 | Produção
+		lineageTag: 3a1c51ad-76c6-5c81-a056-15a53641f2ac
+
+	/// Número de ordens de produção.
+	measure 'Nº OPs' = COUNTROWS(fProducao)
+		formatString: #,0
+		displayFolder: 01 | Produção
+		lineageTag: 8ba3665c-dee2-5a9a-a477-bfaa72dc814f
+
+	/// Percentual de ordens com status Parcial.
+	measure 'OPs Parciais %' = DIVIDE(CALCULATE(COUNTROWS(fProducao), fProducao[Status OP] = "Parcial"), [Nº OPs])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 01 | Produção
+		lineageTag: 4dfd3293-53e9-5e69-857e-12cf9947b51b
+
+	/// Unidades produzidas por hora operando.
+	measure 'Produção por Hora' = DIVIDE([Produção Real], [Horas Operando])
+		formatString: #,0.0
+		displayFolder: 01 | Produção
+		lineageTag: 658036c3-4256-5c86-ba13-d0e410ce0996
+
+	/// Média móvel de 3 meses da produção real (linha de tendência; não é previsão).
+	measure 'Produção Média Móvel 3M' =
+			VAR _fim = MAX(dCalendario[Data])
+			VAR _p = DATESINPERIOD(dCalendario[Data], _fim, -3, MONTH)
+			VAR _n = CALCULATE(DISTINCTCOUNT(dCalendario[Início Mês]), _p)
+			RETURN IF(NOT ISBLANK([Produção Real]), DIVIDE(CALCULATE([Produção Real], _p), _n))
+		formatString: #,0
+		displayFolder: 01 | Produção
+		lineageTag: 1c126cf2-0bca-55f5-b04f-695acf9e8518
+
+	/// Horas planejadas de operação.
+	measure 'Horas Planejadas' = SUM(fProducao[Horas Planejadas])
+		formatString: #,0.0
+		displayFolder: 02 | Eficiência
+		lineageTag: d6e07618-1928-5547-87bf-c8575889a7ce
+
+	/// Horas efetivamente operando.
+	measure 'Horas Operando' = SUM(fProducao[Horas Operando])
+		formatString: #,0.0
+		displayFolder: 02 | Eficiência
+		lineageTag: 9798bc95-a981-594b-8c11-f3b5c50f7d06
+
+	/// Horas operando ponderadas pela performance da OP (horas equivalentes no ritmo padrão). Base aditiva para agregar a Performance.
+	measure 'Horas Ritmo Padrão' = SUM(fProducao[Horas Ritmo Padrão])
+		isHidden
+		formatString: #,0.0
+		displayFolder: 02 | Eficiência
+		lineageTag: 76fae7b2-09b1-525d-9a4e-1f688859e969
+
+	/// Horas Operando / Horas Planejadas. Equivale à utilização do tempo planejado.
+	measure 'Disponibilidade %' = DIVIDE([Horas Operando], [Horas Planejadas])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 02 | Eficiência
+		lineageTag: a770a08c-0d40-500f-9067-b84d1db18f94
+
+	/// Performance agregada: média da performance das OPs ponderada pelas horas operando.
+	measure 'Performance %' = DIVIDE([Horas Ritmo Padrão], [Horas Operando])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 02 | Eficiência
+		lineageTag: 939dbe5c-2547-5d03-942a-29cf7ee040f2
+
+	/// Produção Boa / Produção Real (Yield).
+	measure 'Qualidade %' = DIVIDE([Produção Boa], [Produção Real])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 02 | Eficiência
+		lineageTag: adeb48c1-2227-5bdc-983a-f3fe3c57f0d2
+
+	/// OEE = Disponibilidade × Performance × Qualidade, recalculado no nível de agregação do contexto.
+	measure 'OEE %' = [Disponibilidade %] * [Performance %] * [Qualidade %]
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 02 | Eficiência
+		lineageTag: 2fc61b59-3b25-5b75-9b0a-7d771b3d03f0
+
+	/// Diferença em pontos percentuais entre o OEE e a meta.
+	measure 'OEE Gap Meta p.p.' = ([OEE %] - [Meta OEE]) * 100
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 02 | Eficiência
+		lineageTag: 81959949-6fa1-5c1d-8e4e-076675244878
+
+	/// Classificação do OEE: Na meta (≥ meta), Atenção (até 10 p.p. abaixo) ou Crítico.
+	measure 'OEE Classificação' =
+			VAR _v = [OEE %]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), BLANK(), _v >= [Meta OEE], "● Na meta", _v >= [Meta OEE] - 0.10, "● Atenção", "● Crítico")
+		displayFolder: 02 | Eficiência
+		lineageTag: 1b69048e-8c0f-500a-bf9d-3e1fcde511ef
+
+	/// Componente do OEE com o menor índice (onde está a maior perda).
+	measure 'OEE Maior Perda' =
+			VAR _d = [Disponibilidade %]
+			VAR _p = [Performance %]
+			VAR _q = [Qualidade %]
+			VAR _min = MIN(_d, MIN(_p, _q))
+			RETURN SWITCH(TRUE(), ISBLANK(_d), BLANK(), _min = _d, "Disponibilidade", _min = _p, "Performance", "Qualidade")
+		displayFolder: 02 | Eficiência
+		lineageTag: 6adc9db1-f6b0-54d7-8305-eba54561593d
+
+	/// Unidades por hora em ritmo padrão (Produção Real / Horas Ritmo Padrão). Usada para converter horas perdidas em unidades estimadas.
+	measure 'Taxa Padrão un/h' = DIVIDE([Produção Real], [Horas Ritmo Padrão])
+		isHidden
+		formatString: #,0.0
+		displayFolder: 02 | Eficiência
+		lineageTag: 79b3bdb7-c590-5c5e-912a-264fc69ce327
+
+	/// Quantidade refugada (scrap).
+	measure Refugo = SUM(fProducao[Qtd Refugo])
+		formatString: #,0
+		displayFolder: 03 | Qualidade
+		lineageTag: 8dd239a1-17ba-5500-8a62-c8dd338189de
+
+	/// Refugo / Produção Real.
+	measure 'Scrap %' = DIVIDE([Refugo], [Produção Real])
+		formatString: 0.00%
+		displayFolder: 03 | Qualidade
+		lineageTag: f38a8055-b6d3-5767-a5ba-5a8a56139bc3
+
+	/// Quantidade retrabalhada.
+	measure Retrabalho = SUM(fProducao[Qtd Retrabalho])
+		formatString: #,0
+		displayFolder: 03 | Qualidade
+		lineageTag: 88dd3b97-8b18-5349-addf-a7c7f6e7a64a
+
+	/// Retrabalho / Produção Real.
+	measure 'Retrabalho %' = DIVIDE([Retrabalho], [Produção Real])
+		formatString: 0.00%
+		displayFolder: 03 | Qualidade
+		lineageTag: f6cf647b-e49d-5847-8b39-335a9912159b
+
+	/// Rendimento: Produção Boa / Produção Real.
+	measure 'Yield %' = [Qualidade %]
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 03 | Qualidade
+		lineageTag: 897c4958-c84d-5569-8eb8-d6aa20e30d98
+
+	/// First Pass Yield aproximado: (Produção Boa − Retrabalho) / Produção Real. Assume que as unidades retrabalhadas estão contidas na produção boa.
+	measure 'FPY % (aprox.)' = DIVIDE([Produção Boa] - [Retrabalho], [Produção Real])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 03 | Qualidade
+		lineageTag: 21ec325d-47e9-521f-ac3e-d7d330b04947
+
+	/// (Refugo + Retrabalho) / Produção Real.
+	measure 'Taxa de Defeitos %' = DIVIDE([Refugo] + [Retrabalho], [Produção Real])
+		formatString: 0.00%
+		displayFolder: 03 | Qualidade
+		lineageTag: b655f213-1098-5019-aea5-7bc9252ce5f1
+
+	/// Custo das unidades refugadas.
+	measure 'Custo Refugo' = SUM(fProducao[Custo Refugo])
+		formatString: \R$ #,0
+		displayFolder: 03 | Qualidade
+		lineageTag: f0d0a5fa-470a-5047-8e46-4477e9b46ea5
+
+	/// Custo do retrabalho.
+	measure 'Custo Retrabalho' = SUM(fProducao[Custo Retrabalho])
+		formatString: \R$ #,0
+		displayFolder: 03 | Qualidade
+		lineageTag: c0a43398-7126-5641-ae4f-88ff7d900590
+
+	/// CNQ = Custo de Refugo + Custo de Retrabalho.
+	measure 'Custo Não Qualidade' = [Custo Refugo] + [Custo Retrabalho]
+		formatString: \R$ #,0
+		displayFolder: 03 | Qualidade
+		lineageTag: 539576ce-9861-5273-b627-c62142590c4e
+
+	/// Custo da Não Qualidade / Custo Total.
+	measure 'CNQ % do Custo' = DIVIDE([Custo Não Qualidade], [Custo Total])
+		formatString: 0.00%
+		displayFolder: 03 | Qualidade
+		lineageTag: 47e33d6f-46f1-57d6-8efb-4fa99ac3127d
+
+	/// CNQ apenas das OPs com causa de defeito relevante (exclui 'Sem defeito relevante'). Base do Pareto e do heatmap.
+	measure 'CNQ Defeitos' = CALCULATE([Custo Não Qualidade], KEEPFILTERS(dCausaDefeito[Relevante] = 1))
+		formatString: \R$ #,0
+		displayFolder: 03 | Qualidade
+		lineageTag: 1fe15caa-e85b-5ee6-a1ae-69a51a330052
+
+	/// Percentual acumulado do CNQ por causa de defeito (ordem decrescente).
+	measure 'Pareto Defeitos % Acum.' =
+			VAR _atual = [CNQ Defeitos]
+			VAR _t = CALCULATETABLE(ADDCOLUMNS(VALUES(dCausaDefeito[Causa Defeito]), "@v", [CNQ Defeitos]), ALLSELECTED(dCausaDefeito))
+			VAR _total = SUMX(_t, [@v])
+			VAR _acum = SUMX(FILTER(_t, [@v] >= _atual), [@v])
+			RETURN IF(_atual > 0, DIVIDE(_acum, _total))
+		formatString: 0%
+		displayFolder: 03 | Qualidade
+		lineageTag: 08bf758b-7e7f-5a28-bd69-af862bbe078e
+
+	/// Causa de defeito relevante com maior custo da não qualidade no contexto.
+	measure 'Principal Causa Defeito' =
+			VAR _cT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dCausaDefeito[Causa Defeito]), "@v", [CNQ Defeitos]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _cN = MAXX(_cT, dCausaDefeito[Causa Defeito])
+			VAR _cV = MAXX(_cT, [@v])
+			RETURN _cN
+		displayFolder: 03 | Qualidade
+		lineageTag: b83d901a-21d9-54cd-ad98-5d278fe71686
+
+	/// Horas de parada (Horas Planejadas − Horas Operando).
+	measure 'Horas Parada' = SUM(fProducao[Horas Parada])
+		formatString: #,0.0
+		displayFolder: 04 | Downtime
+		lineageTag: b5c63895-5b59-5391-9b25-d77af3e8e7c2
+
+	/// Horas Parada / Horas Planejadas.
+	measure 'Downtime %' = DIVIDE([Horas Parada], [Horas Planejadas])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 04 | Downtime
+		lineageTag: 65dbd2c1-3747-5365-889b-ffc77ad8f1f6
+
+	/// Horas de parada por setup/troca.
+	measure 'Horas Setup' = SUM(fProducao[Horas Setup])
+		formatString: #,0.0
+		displayFolder: 04 | Downtime
+		lineageTag: b48bd2d8-f0e6-5158-b376-a80cdcb02b21
+
+	/// Horas de parada por manutenção.
+	measure 'Horas Manutenção' = SUM(fProducao[Horas Manutenção])
+		formatString: #,0.0
+		displayFolder: 04 | Downtime
+		lineageTag: a4f427a6-df5e-55d6-b4c0-aadfe0c4e70d
+
+	/// Horas de parada por falta de material.
+	measure 'Horas Falta Material' = SUM(fProducao[Horas Falta Material])
+		formatString: #,0.0
+		displayFolder: 04 | Downtime
+		lineageTag: ecbfa250-ac6c-5180-a36a-6eb0ac643db9
+
+	/// Horas de parada das OPs com causa principal relevante (exclui 'Sem parada relevante'). Base do Pareto.
+	measure 'Paradas Pareto h' = CALCULATE([Horas Parada], KEEPFILTERS(dCausaParada[Relevante] = 1))
+		formatString: #,0.0
+		displayFolder: 04 | Downtime
+		lineageTag: 51617594-c49f-5f1c-80d5-aa2668942edd
+
+	/// Percentual acumulado das horas de parada por causa principal (ordem decrescente).
+	measure 'Pareto Paradas % Acum.' =
+			VAR _atual = [Paradas Pareto h]
+			VAR _t = CALCULATETABLE(ADDCOLUMNS(VALUES(dCausaParada[Causa Parada]), "@v", [Paradas Pareto h]), ALLSELECTED(dCausaParada))
+			VAR _total = SUMX(_t, [@v])
+			VAR _acum = SUMX(FILTER(_t, [@v] >= _atual), [@v])
+			RETURN IF(_atual > 0, DIVIDE(_acum, _total))
+		formatString: 0%
+		displayFolder: 04 | Downtime
+		lineageTag: 7aff4e19-7b88-5442-bf52-aeeefac5b1de
+
+	/// Linha de referência de 80% para os gráficos de Pareto.
+	measure 'Referência 80%' = 0.8
+		formatString: 0%
+		displayFolder: 04 | Downtime
+		lineageTag: 8057298c-f8b2-5867-a67f-b23a82902935
+
+	/// Causa principal de parada com mais horas no contexto.
+	measure 'Principal Causa Parada' =
+			VAR _cT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dCausaParada[Causa Parada]), "@v", [Paradas Pareto h]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _cN = MAXX(_cT, dCausaParada[Causa Parada])
+			VAR _cV = MAXX(_cT, [@v])
+			RETURN _cN
+		displayFolder: 04 | Downtime
+		lineageTag: d52699ea-e3ed-5e60-a1ef-956a72aa8313
+
+	/// ESTIMATIVA: unidades não produzidas devido às paradas = Horas Parada × Taxa Padrão (un/h).
+	measure 'Impacto Downtime un. (est.)' = [Horas Parada] * [Taxa Padrão un/h]
+		formatString: #,0
+		displayFolder: 04 | Downtime
+		lineageTag: 0da0900a-3982-5d31-a547-5248a746001f
+
+	/// ESTIMATIVA: produção possível se todas as horas planejadas fossem operadas no ritmo padrão = Horas Planejadas × Taxa Padrão.
+	measure 'Capacidade Teórica un. (est.)' = [Horas Planejadas] * [Taxa Padrão un/h]
+		formatString: #,0
+		displayFolder: 04 | Downtime
+		lineageTag: b42f1fe0-9260-5c9b-84f0-e952a7e9de6e
+
+	/// ESTIMATIVA: unidades perdidas por operar abaixo do ritmo padrão = (Horas Operando − Horas Ritmo Padrão) × Taxa Padrão.
+	measure 'Perda Ritmo un. (est.)' = ([Horas Operando] - [Horas Ritmo Padrão]) * [Taxa Padrão un/h]
+		formatString: #,0
+		displayFolder: 04 | Downtime
+		lineageTag: ac322fcd-83da-55c6-8cf6-6a3ece427f57
+
+	/// Valor de cada etapa da ponte Capacidade Teórica → Produção Boa (unidades estimadas pelas horas perdidas × taxa padrão).
+	measure 'Ponte de Perdas un.' =
+			VAR _tx = [Taxa Padrão un/h]
+			RETURN SWITCH(SELECTEDVALUE(Ponte[Ordem]),
+			    1, [Capacidade Teórica un. (est.)],
+			    2, - [Horas Setup] * _tx,
+			    3, - [Horas Manutenção] * _tx,
+			    4, - [Horas Falta Material] * _tx,
+			    5, - [Perda Ritmo un. (est.)],
+			    6, - [Refugo]
+			)
+		formatString: #,0
+		displayFolder: 04 | Downtime
+		lineageTag: f276422a-4dff-5675-a407-ea01d8a45c4b
+
+	/// Custo total das ordens de produção (matéria-prima + mão de obra + energia + refugo + retrabalho).
+	measure 'Custo Total' = SUM(fProducao[Custo Total OP])
+		formatString: \R$ #,0
+		displayFolder: 05 | Custos
+		lineageTag: f71ea56b-73f7-5f6e-a8c8-0fc1a64cb737
+
+	/// Custo de matéria-prima (custo unitário × quantidade produzida).
+	measure 'Custo Matéria-Prima' = SUM(fProducao[Custo MP])
+		formatString: \R$ #,0
+		displayFolder: 05 | Custos
+		lineageTag: 236a0d0e-8da2-5bf6-9661-5a4cc92c57ac
+
+	/// Custo de mão de obra (custo unitário × quantidade produzida).
+	measure 'Custo Mão de Obra' = SUM(fProducao[Custo Mão de Obra])
+		formatString: \R$ #,0
+		displayFolder: 05 | Custos
+		lineageTag: 045b9382-988e-5880-b6b1-fe64111ab07f
+
+	/// Custo de energia (custo unitário × quantidade produzida).
+	measure 'Custo Energia' = SUM(fProducao[Custo Energia])
+		formatString: \R$ #,0
+		displayFolder: 05 | Custos
+		lineageTag: 72a2c29f-bd1f-59cc-a0c1-2446160bd9d9
+
+	/// Custo Total / Produção Real.
+	measure 'Custo Unitário' = DIVIDE([Custo Total], [Produção Real])
+		formatString: \R$ #,0.00
+		displayFolder: 05 | Custos
+		lineageTag: 65a705b5-fc00-54a3-bf9f-ef13ba05177a
+
+	/// Custo Total / Produção Boa. Revela deterioração de custo quando há perda de qualidade.
+	measure 'Custo por Unidade Boa' = DIVIDE([Custo Total], [Produção Boa])
+		formatString: \R$ #,0.00
+		displayFolder: 05 | Custos
+		lineageTag: 781333cb-d55d-5bae-b0bd-92189509011e
+
+	/// Lead time médio previsto do fornecedor, em dias.
+	measure 'Lead Time Previsto (dias)' = AVERAGE(fProducao[Lead Time Previsto])
+		formatString: #,0.0
+		displayFolder: 06 | Supply Chain
+		lineageTag: 34f713ba-56af-5476-8a0f-a58e3a4f2783
+
+	/// Lead time médio real do fornecedor, em dias.
+	measure 'Lead Time Real (dias)' = AVERAGE(fProducao[Lead Time Real])
+		formatString: #,0.0
+		displayFolder: 06 | Supply Chain
+		lineageTag: 5791aa25-c63c-5977-ac51-2ee396bdc25c
+
+	/// Lead time real − previsto (média). Positivo = atraso.
+	measure 'Desvio Lead Time (dias)' = AVERAGE(fProducao[Atraso Fornecedor Dias])
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 06 | Supply Chain
+		lineageTag: 0d9a98d0-ee0a-5faf-9fdc-9e95494e9df8
+
+	/// Percentual de OPs abastecidas com entrega do fornecedor no prazo (flag da base; tolera até 1 dia de atraso).
+	measure 'Fornecedor no Prazo %' = AVERAGE(fProducao[Fornecedor No Prazo])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 06 | Supply Chain
+		lineageTag: 67662f7c-6ca5-5c27-b5b7-768035921af5
+
+	/// Atraso médio, em dias, considerando apenas entregas fora do prazo.
+	measure 'Atraso Médio Fornecedor (dias)' = CALCULATE(AVERAGE(fProducao[Atraso Fornecedor Dias]), fProducao[Fornecedor No Prazo] = 0)
+		formatString: #,0.0
+		displayFolder: 06 | Supply Chain
+		lineageTag: 6b6f8a85-11a0-586e-933d-2ff73aae3f6e
+
+	/// Quantidade de matéria-prima recebida nos lotes associados às OPs.
+	measure 'Lote MP Recebido' = SUM(fProducao[Lote MP Recebido])
+		formatString: #,0
+		displayFolder: 06 | Supply Chain
+		lineageTag: 7b6b8670-c7fc-5f98-bb6d-2493488d8f69
+
+	/// Quantidade de matéria-prima reprovada no recebimento.
+	measure 'Lote MP Reprovado' = SUM(fProducao[Lote MP Reprovado])
+		formatString: #,0
+		displayFolder: 06 | Supply Chain
+		lineageTag: 2747f1fc-d33d-584c-8e9d-6691491ae866
+
+	/// Lote MP Reprovado / Lote MP Recebido.
+	measure 'Reprovação MP %' = DIVIDE([Lote MP Reprovado], [Lote MP Recebido])
+		formatString: 0.00%
+		displayFolder: 06 | Supply Chain
+		lineageTag: a83c328b-bfb3-532c-98dd-c103a516d472
+
+	/// Média do estoque final de MP registrado nas OPs. A base traz uma posição por OP (não é razão contínua de estoque), por isso usa-se média.
+	measure 'Estoque Final Médio MP' = AVERAGE(fProducao[Estoque Final MP])
+		formatString: #,0
+		displayFolder: 07 | Estoques
+		lineageTag: 1202eec1-5140-5916-8a6b-b25a2799c650
+
+	/// Média do estoque de segurança de MP registrado nas OPs.
+	measure 'Estoque Segurança Médio MP' = AVERAGE(fProducao[Estoque Segurança MP])
+		formatString: #,0
+		displayFolder: 07 | Estoques
+		lineageTag: e41c3423-466e-5ca2-8e7a-d38087244f6d
+
+	/// Estoque final médio dividido pelo estoque de segurança médio.
+	measure 'Índice Estoque / Segurança' = DIVIDE(SUM(fProducao[Estoque Final MP]), SUM(fProducao[Estoque Segurança MP]))
+		formatString: 0.00x
+		displayFolder: 07 | Estoques
+		lineageTag: 83988bf5-de1f-52f6-9f78-086c01d62dfd
+
+	/// Consumo de matéria-prima nas OPs.
+	measure 'Consumo MP' = SUM(fProducao[Consumo MP])
+		formatString: #,0
+		displayFolder: 07 | Estoques
+		lineageTag: d41a11bf-1a85-5b05-a52a-e77b2c31822e
+
+	/// Recebimento de matéria-prima registrado nas OPs.
+	measure 'Recebimento MP' = SUM(fProducao[Recebimento MP])
+		formatString: #,0
+		displayFolder: 07 | Estoques
+		lineageTag: b0d82582-5b86-5e29-8a5b-57c35143bfb9
+
+	/// Estoque final médio / consumo médio por OP: quantas OPs equivalentes o estoque cobre.
+	measure 'Cobertura (nº de OPs)' = DIVIDE(AVERAGE(fProducao[Estoque Final MP]), AVERAGE(fProducao[Consumo MP]))
+		formatString: #,0.0
+		displayFolder: 07 | Estoques
+		lineageTag: d74cbd8e-bef5-5210-99f6-bbc6cf04661f
+
+	/// Número de OPs com ruptura de estoque de MP.
+	measure Rupturas = SUM(fProducao[Ruptura])
+		formatString: #,0
+		displayFolder: 07 | Estoques
+		lineageTag: 6f1c26d6-df3d-59d6-8f85-b8329dea06ed
+
+	/// Rupturas / Nº de OPs.
+	measure 'Taxa de Ruptura %' = DIVIDE([Rupturas], [Nº OPs])
+		formatString: 0.00%
+		displayFolder: 07 | Estoques
+		lineageTag: 91986a25-fe43-5b14-8c68-38dacbca63ec
+
+	/// Número de OPs cujo estoque final de MP ficou abaixo do estoque de segurança.
+	measure 'OPs Abaixo da Segurança' = SUM(fProducao[Abaixo Segurança])
+		formatString: #,0
+		displayFolder: 07 | Estoques
+		lineageTag: 0e7808c1-81ad-5225-bd6f-c70d08501d9c
+
+	/// Percentual de OPs com estoque final de MP abaixo do estoque de segurança.
+	measure 'OPs Abaixo da Segurança %' = DIVIDE([OPs Abaixo da Segurança], [Nº OPs])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 07 | Estoques
+		lineageTag: 85c44ba0-8ef3-5be6-8f8e-9cdd0f0e529f
+
+	/// Classificação de risco de estoque no contexto (ex.: por matéria-prima): CRÍTICO se % de OPs abaixo da segurança ≥ 12% ou taxa de ruptura ≥ 3%; ATENÇÃO se ≥ limite gerencial (10%); EXCESSO se índice estoque/segurança > 4; senão SAUDÁVEL.
+	measure 'Status Estoque' =
+			VAR _ab = [OPs Abaixo da Segurança %]
+			VAR _rp = [Taxa de Ruptura %]
+			VAR _ix = [Índice Estoque / Segurança]
+			RETURN SWITCH(TRUE(),
+			    ISBLANK(_ab), BLANK(),
+			    _ab >= 0.12 || _rp >= 0.03, "CRÍTICO",
+			    _ab >= [Limite OPs Abaixo Segurança], "ATENÇÃO",
+			    _ix > 4, "EXCESSO",
+			    "SAUDÁVEL")
+		displayFolder: 07 | Estoques
+		lineageTag: 12dab5a2-3f0a-55d5-9fa8-a12abd68529f
+
+	/// Número de matérias-primas classificadas como CRÍTICO ou ATENÇÃO.
+	measure 'Materiais em Risco' = COUNTROWS(FILTER(VALUES(dMateriaPrima[Matéria-Prima]), [Status Estoque] IN {"CRÍTICO", "ATENÇÃO"})) + 0
+		formatString: #,0
+		displayFolder: 07 | Estoques
+		lineageTag: 6c2d338c-5b0d-563a-8071-3027a84696b1
+
+	/// Score 0–100 do fornecedor = 40% Pontualidade (% no prazo) + 30% Qualidade do lote (1 − reprovação/3%, limitado a 0–1) + 30% Aderência de lead time (1 − desvio médio/5 dias, limitado a 0–1). Pesos são parâmetros gerenciais.
+	measure 'Supplier Score' =
+			VAR _pont = [Fornecedor no Prazo %]
+			VAR _qual = 1 - MIN(1, DIVIDE([Reprovação MP %], 0.03))
+			VAR _lead = 1 - MIN(1, MAX(0, DIVIDE([Desvio Lead Time (dias)], 5)))
+			RETURN IF(NOT ISBLANK(_pont), ROUND(100 * (0.4 * _pont + 0.3 * _qual + 0.3 * _lead), 0))
+		formatString: 0
+		displayFolder: 08 | Fornecedores
+		lineageTag: 82d94597-fcaa-58f0-9267-a43c60ce638a
+
+	/// Classe do Supplier Score: A (≥ 75), B (≥ 60), C (< 60).
+	measure 'Supplier Score Classe' =
+			VAR _s = [Supplier Score]
+			RETURN SWITCH(TRUE(), ISBLANK(_s), BLANK(), _s >= 75, "A", _s >= 60, "B", "C")
+		displayFolder: 08 | Fornecedores
+		lineageTag: 6aa3f40e-04e4-5db3-b8bb-bc8be1abc588
+
+	/// Número de fornecedores com pontualidade abaixo da meta.
+	measure 'Fornecedores Fora da Meta' = COUNTROWS(FILTER(VALUES(dFornecedor[Fornecedor]), [Fornecedor no Prazo %] < [Meta Fornecedor no Prazo])) + 0
+		formatString: #,0
+		displayFolder: 08 | Fornecedores
+		lineageTag: f2ca6cc4-8428-5d85-a499-4846eecf2e14
+
+	/// Percentual de OPs entregues ao cliente no prazo e na quantidade (flag OTIF da base).
+	measure 'OTIF %' = AVERAGE(fProducao[OTIF])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 09 | Logística
+		lineageTag: e91a556c-a5a1-58bb-a73d-1a9162e2e26f
+
+	/// Número de OPs com atraso de entrega ao cliente (> 0 dias).
+	measure 'Entregas Atrasadas' = CALCULATE(COUNTROWS(fProducao), fProducao[Atraso Entrega Dias] > 0) + 0
+		formatString: #,0
+		displayFolder: 09 | Logística
+		lineageTag: ec65b249-f326-5127-ab11-a7e022716856
+
+	/// Entregas atrasadas / Nº de OPs.
+	measure 'Entregas Atrasadas %' = DIVIDE([Entregas Atrasadas], [Nº OPs])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 09 | Logística
+		lineageTag: 87fa18fc-2a49-5fec-aec2-e87a3c471f3e
+
+	/// INFERÊNCIA: OPs sem OTIF e sem atraso de entrega (falha atribuída à quantidade incompleta) / Nº de OPs.
+	measure 'Falha In-Full % (inferida)' = DIVIDE(CALCULATE(COUNTROWS(fProducao), fProducao[OTIF] = 0, fProducao[Atraso Entrega Dias] <= 0), [Nº OPs])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 09 | Logística
+		lineageTag: 66e181f2-a07f-534d-9857-eaa7c70e083a
+
+	/// Atraso médio, em dias, das entregas atrasadas.
+	measure 'Atraso Médio Entrega (dias)' = CALCULATE(AVERAGE(fProducao[Atraso Entrega Dias]), fProducao[Atraso Entrega Dias] > 0)
+		formatString: #,0.0
+		displayFolder: 09 | Logística
+		lineageTag: 24d32f18-c380-5c50-8b9f-e5ebad635a25
+
+	/// Prazo médio acordado com o cliente, em dias.
+	measure 'Prazo Cliente Médio (dias)' = AVERAGE(fProducao[Prazo Cliente Dias])
+		formatString: #,0.0
+		displayFolder: 09 | Logística
+		lineageTag: 5fb7658d-5f8e-5d7f-89b6-e3f51fedade3
+
+	/// Custo total de frete.
+	measure 'Custo Frete' = SUM(fProducao[Custo Frete])
+		formatString: \R$ #,0
+		displayFolder: 09 | Logística
+		lineageTag: 740b0dbd-03c7-5a83-be66-7e493a1235db
+
+	/// Custo de frete / Produção Boa.
+	measure 'Frete por Unidade' = DIVIDE([Custo Frete], [Produção Boa])
+		formatString: \R$ #,0.00
+		displayFolder: 09 | Logística
+		lineageTag: 3ed7dba2-57fa-50b2-99f4-8113c554cb2f
+
+	/// Produção real no período imediatamente anterior, de mesma duração. Em branco quando não há histórico completo para comparar.
+	measure 'Produção Real PA' =
+			VAR _ini = MIN(dCalendario[Data])
+			VAR _fim = MAX(dCalendario[Data])
+			VAR _dias = DATEDIFF(_ini, _fim, DAY) + 1
+			VAR _primeira = CALCULATE(MIN(dCalendario[Data]), REMOVEFILTERS(dCalendario))
+			RETURN IF(_ini - _dias >= _primeira, CALCULATE([Produção Real], DATESBETWEEN(dCalendario[Data], _ini - _dias, _ini - 1)))
+		formatString: #,0
+		displayFolder: 10 | Comparativos
+		lineageTag: d0bef5cd-0b35-5594-bd8c-618a2c3ebad9
+
+	/// OEE no período imediatamente anterior, de mesma duração. Em branco quando não há histórico completo para comparar.
+	measure 'OEE % PA' =
+			VAR _ini = MIN(dCalendario[Data])
+			VAR _fim = MAX(dCalendario[Data])
+			VAR _dias = DATEDIFF(_ini, _fim, DAY) + 1
+			VAR _primeira = CALCULATE(MIN(dCalendario[Data]), REMOVEFILTERS(dCalendario))
+			RETURN IF(_ini - _dias >= _primeira, CALCULATE([OEE %], DATESBETWEEN(dCalendario[Data], _ini - _dias, _ini - 1)))
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 10 | Comparativos
+		lineageTag: ec3565e7-1af2-5ff6-89c3-d1e853990e32
+
+	/// Variação da produção real versus o período anterior de mesma duração.
+	measure 'Produção Real Δ PA %' = VAR _pa = [Produção Real PA] RETURN IF(NOT ISBLANK(_pa), DIVIDE([Produção Real] - _pa, _pa))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 10 | Comparativos
+		lineageTag: 3202eec1-d780-5c53-9e2a-73b69cc507f2
+
+	/// Variação do OEE em pontos percentuais versus o período anterior de mesma duração.
+	measure 'OEE Δ PA p.p.' = VAR _pa = [OEE % PA] RETURN IF(NOT ISBLANK(_pa), ([OEE %] - _pa) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: cdefc72b-79ce-5890-9b93-3199f04797f0
+
+	/// Produção Real: último mês do contexto versus o mês anterior (variação relativa).
+	measure 'Produção Real Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Produção Real], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Produção Real], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), DIVIDE(_cur - _ant, _ant))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 10 | Comparativos
+		lineageTag: 0cc7f690-8bb0-5d59-a8c2-bf7bed9308c1
+
+	/// Aderência ao Plano %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Aderência ao Plano % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Aderência ao Plano %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Aderência ao Plano %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: bbde417f-4d62-5293-9f0d-a70f12d41133
+
+	/// OEE %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'OEE % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([OEE %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([OEE %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: 95e86046-c965-5dc8-b5c2-ec13496d6e51
+
+	/// Disponibilidade %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Disponibilidade % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Disponibilidade %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Disponibilidade %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: d09f0c21-2ac4-574d-ad99-4aa339215456
+
+	/// Performance %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Performance % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Performance %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Performance %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: 4922a21e-7fb8-5a8f-a788-ba458ff67a1d
+
+	/// Qualidade %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Qualidade % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Qualidade %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Qualidade %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: 6d6d8100-2d50-513d-97ce-d0ae3fa5d67f
+
+	/// Scrap %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Scrap % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Scrap %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Scrap %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: 585711c9-67c1-534f-8921-b4a3af12b11d
+
+	/// Retrabalho %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Retrabalho % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Retrabalho %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Retrabalho %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: 75d16ef4-78e5-5c65-83cb-ec16447f136e
+
+	/// Downtime %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Downtime % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Downtime %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Downtime %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: 404cb297-2021-5eea-a728-3235a6fb05f0
+
+	/// Horas Parada: último mês do contexto versus o mês anterior (variação relativa).
+	measure 'Horas Parada Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Horas Parada], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Horas Parada], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), DIVIDE(_cur - _ant, _ant))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 10 | Comparativos
+		lineageTag: edac4b1c-06fe-52d3-ad56-e3aab020407a
+
+	/// OTIF %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'OTIF % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([OTIF %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([OTIF %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: 8e2a8201-5c74-57ec-8127-5b183b15776b
+
+	/// Custo Não Qualidade: último mês do contexto versus o mês anterior (variação relativa).
+	measure 'Custo Não Qualidade Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Custo Não Qualidade], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Custo Não Qualidade], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), DIVIDE(_cur - _ant, _ant))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 10 | Comparativos
+		lineageTag: 23a72f84-3ef9-5544-8041-bcfa4292f931
+
+	/// Custo por Unidade Boa: último mês do contexto versus o mês anterior (variação relativa).
+	measure 'Custo por Unidade Boa Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Custo por Unidade Boa], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Custo por Unidade Boa], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), DIVIDE(_cur - _ant, _ant))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 10 | Comparativos
+		lineageTag: 3e9eaec9-46e1-552a-8b7b-b61d590c69d0
+
+	/// Custo Total: último mês do contexto versus o mês anterior (variação relativa).
+	measure 'Custo Total Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Custo Total], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Custo Total], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), DIVIDE(_cur - _ant, _ant))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 10 | Comparativos
+		lineageTag: 5244dfc2-c0e4-5481-a211-d17c5e591973
+
+	/// Fornecedor no Prazo %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Fornecedor no Prazo % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Fornecedor no Prazo %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Fornecedor no Prazo %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: e3f5d621-0b42-5235-8906-2ba6552f4ec5
+
+	/// Lead Time Real (dias): último mês do contexto versus o mês anterior (diferença absoluta).
+	measure 'Lead Time Real (dias) Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Lead Time Real (dias)], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Lead Time Real (dias)], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), _cur - _ant)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: f5f417b2-0617-5b4a-bc6f-d7122ce68cc3
+
+	/// Reprovação MP %: último mês do contexto versus o mês anterior (em pontos percentuais).
+	measure 'Reprovação MP % Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Reprovação MP %], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Reprovação MP %], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), (_cur - _ant) * 100)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: 664e84e7-f17a-5d7a-a600-128cca09bda5
+
+	/// Rupturas: último mês do contexto versus o mês anterior (diferença absoluta).
+	measure 'Rupturas Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Rupturas], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Rupturas], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), _cur - _ant)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 10 | Comparativos
+		lineageTag: cf675ee4-e7ab-5e1e-8f3e-85f266e94793
+
+	/// Frete por Unidade: último mês do contexto versus o mês anterior (variação relativa).
+	measure 'Frete por Unidade Δ Mês' =
+			VAR _ult = MAX(fProducao[Data])
+			VAR _mes = DATE(YEAR(_ult), MONTH(_ult), 1)
+			VAR _cur = CALCULATE([Frete por Unidade], dCalendario[Início Mês] = _mes)
+			VAR _ant = CALCULATE([Frete por Unidade], REMOVEFILTERS(dCalendario), dCalendario[Início Mês] = EDATE(_mes, -1))
+			RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_ant), DIVIDE(_cur - _ant, _ant))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 10 | Comparativos
+		lineageTag: 4c204f29-3983-50d6-a46a-5c6953f8018e
+
+	/// Percentual de redução de downtime escolhido no simulador (padrão 10%).
+	measure 'Sim Redução Downtime' = SELECTEDVALUE('Simulação Downtime'[Redução Downtime], 0.10)
+		formatString: 0%
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: 375de888-83b2-5a9c-ac45-87f6b0d7de65
+
+	/// SIMULAÇÃO: horas de parada recuperadas = Horas Parada × redução escolhida.
+	measure 'Sim Horas Recuperadas' = [Horas Parada] * [Sim Redução Downtime]
+		formatString: #,0.0
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: 98b38963-5493-5356-bb49-55853dd95b75
+
+	/// SIMULAÇÃO: produção adicional estimada = horas recuperadas × produção por hora operando atual (mantém a performance observada).
+	measure 'Sim Produção Adicional' = [Sim Horas Recuperadas] * [Produção por Hora]
+		formatString: #,0
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: fcacf818-8d30-549d-a461-9b0f38b0c443
+
+	/// SIMULAÇÃO: OEE com a disponibilidade recalculada após a redução de downtime (performance e qualidade mantidas).
+	measure 'Sim OEE Projetado' = DIVIDE([Horas Operando] + [Sim Horas Recuperadas], [Horas Planejadas]) * [Performance %] * [Qualidade %]
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: 8c392800-510e-557c-abdc-40cc14c8a211
+
+	/// SIMULAÇÃO: ganho de OEE em pontos percentuais.
+	measure 'Sim Ganho OEE p.p.' = ([Sim OEE Projetado] - [OEE %]) * 100
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: c36f4bce-8184-5ec4-bdd6-842aac85a75f
+
+	/// SIMULAÇÃO: aderência ao plano somando a produção adicional estimada.
+	measure 'Sim Aderência Projetada' = DIVIDE([Produção Real] + [Sim Produção Adicional], [Plano])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: 8011d8cf-d072-5855-a1e6-ed52984bd8bd
+
+	/// Percentual de redução de scrap escolhido no simulador (padrão 20%).
+	measure 'Sim Redução Scrap' = SELECTEDVALUE('Simulação Scrap'[Redução Scrap], 0.20)
+		formatString: 0%
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: 4034f4da-a90a-5963-b3b3-7ae40ca9c7ba
+
+	/// SIMULAÇÃO: unidades que deixariam de ser refugadas = Refugo × redução escolhida.
+	measure 'Sim Unidades Recuperadas' = [Refugo] * [Sim Redução Scrap]
+		formatString: #,0
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: dd6bbf0c-2830-5f23-b727-7b30ab1d24ae
+
+	/// SIMULAÇÃO: redução do custo de refugo = Custo Refugo × redução escolhida.
+	measure 'Sim Economia CNQ' = [Custo Refugo] * [Sim Redução Scrap]
+		formatString: \R$ #,0
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: e8e0462e-064d-5b35-beed-426b4480b717
+
+	/// SIMULAÇÃO: custo por unidade boa após a redução de scrap = (Custo Total − economia) / (Produção Boa + unidades recuperadas).
+	measure 'Sim Custo por Unidade Boa' = DIVIDE([Custo Total] - [Sim Economia CNQ], [Produção Boa] + [Sim Unidades Recuperadas])
+		formatString: \R$ #,0.00
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: 4c8958a7-affc-5e30-9f51-935cd443f610
+
+	/// Título dinâmico do simulador de downtime.
+	measure 'Sim Título Downtime' = "SIMULAÇÃO · Se o downtime cair " & FORMAT([Sim Redução Downtime], "0%", "pt-BR") & ": +" & FORMAT([Sim Produção Adicional], "#,0", "pt-BR") & " un. e OEE de " & FORMAT([Sim OEE Projetado], "0.0%", "pt-BR")
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: 949aa625-35ce-56a9-b9de-49d5f4aaf88b
+
+	/// Título dinâmico do simulador de scrap.
+	measure 'Sim Título Scrap' = "SIMULAÇÃO · Se o scrap cair " & FORMAT([Sim Redução Scrap], "0%", "pt-BR") & ": economia de " & IF(ABS([Sim Economia CNQ]) >= 1000000, "R$ " & FORMAT(DIVIDE([Sim Economia CNQ], 1000000), "0.00", "pt-BR") & " Mi", "R$ " & FORMAT(DIVIDE([Sim Economia CNQ], 1000), "#,0", "pt-BR") & " mil")
+		displayFolder: 11 | Simulação (What-if)
+		lineageTag: 232fdc36-0e1b-5d14-b140-8ec9df02e461
+
+	/// Alerta 1 (OEE abaixo da meta): desvio normalizado 0–1 em relação ao limite; em branco quando o alerta está inativo.
+	measure 'A1 Desvio' =
+			VAR _gap = DIVIDE([Meta OEE] - [OEE %], [Meta OEE])
+			RETURN IF(NOT ISBLANK([OEE %]) && _gap > 0, MIN(1, DIVIDE(_gap, 0.20)))
+		isHidden
+		formatString: 0.00
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: a4233a28-24bd-53d8-9e09-ce3b256bbfee
+
+	/// Alerta 1 (OEE abaixo da meta): descrição dinâmica da ocorrência.
+	measure 'A1 Texto' =
+			VAR _lT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dLinha[Linha]), "@v", [OEE %]), NOT ISBLANK([@v])), [@v], ASC)
+			VAR _lN = MAXX(_lT, dLinha[Linha])
+			VAR _lV = MAXX(_lT, [@v])
+			RETURN "OEE em " & FORMAT([OEE %], "0.0%", "pt-BR") & ", " & FORMAT(-[OEE Gap Meta p.p.], "0.0", "pt-BR") & " p.p. abaixo da meta. Pior linha: " & _lN & " (" & FORMAT(_lV, "0.0%", "pt-BR") & ")."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 23f28d00-721c-572f-86e4-17021e10686e
+
+	/// Alerta 1 (OEE abaixo da meta): ação sugerida.
+	measure 'A1 Ação' = "Atacar a perda de " & [OEE Maior Perda] & " (" & FORMAT(SWITCH([OEE Maior Perda], "Disponibilidade", [Disponibilidade %], "Performance", [Performance %], [Qualidade %]), "0.0%", "pt-BR") & ")."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: e0a2374a-a936-5bba-b79f-6b2d537e06d5
+
+	/// Alerta 2 (Downtime elevado): desvio normalizado 0–1 em relação ao limite; em branco quando o alerta está inativo.
+	measure 'A2 Desvio' =
+			VAR _lT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dLinha[Linha]), "@v", [Downtime %]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _lN = MAXX(_lT, dLinha[Linha])
+			VAR _lV = MAXX(_lT, [@v])
+			VAR _lim = [Limite Downtime]
+			RETURN IF(_lV > _lim, MIN(1, DIVIDE(DIVIDE(_lV - _lim, _lim), 0.5)))
+		isHidden
+		formatString: 0.00
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: a3322bfe-85ff-5a49-b29c-72b14a0d87fe
+
+	/// Alerta 2 (Downtime elevado): descrição dinâmica da ocorrência.
+	measure 'A2 Texto' =
+			VAR _lT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dLinha[Linha]), "@v", [Downtime %]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _lN = MAXX(_lT, dLinha[Linha])
+			VAR _lV = MAXX(_lT, [@v])
+			VAR _h = CALCULATE([Horas Parada], dLinha[Linha] = _lN)
+			VAR _u = CALCULATE([Impacto Downtime un. (est.)], dLinha[Linha] = _lN)
+			RETURN _lN & " com " & FORMAT(_lV, "0.0%", "pt-BR") & " de downtime (" & FORMAT(_h, "#,0", "pt-BR") & " h ≈ " & FORMAT(_u, "#,0", "pt-BR") & " un. estimadas)."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 8e9ed1ad-7bb6-5a84-bccc-0b01ee7f524e
+
+	/// Alerta 2 (Downtime elevado): ação sugerida.
+	measure 'A2 Ação' =
+			VAR _lT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dLinha[Linha]), "@v", [Downtime %]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _lN = MAXX(_lT, dLinha[Linha])
+			VAR _lV = MAXX(_lT, [@v])
+			VAR _c = CALCULATE([Principal Causa Parada], dLinha[Linha] = _lN)
+			RETURN "Causa principal: " & _c & ". Priorizar plano de manutenção/setup da linha."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: bd4611b0-f021-5219-a2bb-6be0a0233f93
+
+	/// Alerta 3 (Scrap acima do limite): desvio normalizado 0–1 em relação ao limite; em branco quando o alerta está inativo.
+	measure 'A3 Desvio' =
+			VAR _fT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dFornecedor[Fornecedor]), "@v", [Scrap %]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _fN = MAXX(_fT, dFornecedor[Fornecedor])
+			VAR _fV = MAXX(_fT, [@v])
+			VAR _lim = [Limite Scrap]
+			RETURN IF(_fV > _lim, MIN(1, DIVIDE(DIVIDE(_fV - _lim, _lim), 0.5)))
+		isHidden
+		formatString: 0.00
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: ba4f1d07-1b3e-5fe3-b5a4-130d3a64869e
+
+	/// Alerta 3 (Scrap acima do limite): descrição dinâmica da ocorrência.
+	measure 'A3 Texto' =
+			VAR _fT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dFornecedor[Fornecedor]), "@v", [Scrap %]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _fN = MAXX(_fT, dFornecedor[Fornecedor])
+			VAR _fV = MAXX(_fT, [@v])
+			VAR _c = CALCULATE([Custo Refugo], dFornecedor[Fornecedor] = _fN)
+			RETURN "Scrap de " & FORMAT(_fV, "0.00%", "pt-BR") & " nas OPs abastecidas por " & _fN & " (" & IF(ABS(_c) >= 1000000, "R$ " & FORMAT(DIVIDE(_c, 1000000), "0.00", "pt-BR") & " Mi", "R$ " & FORMAT(DIVIDE(_c, 1000), "#,0", "pt-BR") & " mil") & " em refugo)."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 571e4c23-dd90-565d-b82d-f19109739aef
+
+	/// Alerta 3 (Scrap acima do limite): ação sugerida.
+	measure 'A3 Ação' =
+			VAR _fT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dFornecedor[Fornecedor]), "@v", [Scrap %]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _fN = MAXX(_fT, dFornecedor[Fornecedor])
+			VAR _fV = MAXX(_fT, [@v])
+			VAR _c = CALCULATE([Principal Causa Defeito], dFornecedor[Fornecedor] = _fN)
+			RETURN "Defeito dominante: " & _c & ". Auditar o lote de MP e a inspeção de recebimento."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: c55f5ad1-5187-5b81-8ede-813b632f40d8
+
+	/// Alerta 4 (MP abaixo do estoque de segurança): desvio normalizado 0–1 em relação ao limite; em branco quando o alerta está inativo.
+	measure 'A4 Desvio' =
+			VAR _xT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dMateriaPrima[Matéria-Prima]), "@v", [OPs Abaixo da Segurança %]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _xN = MAXX(_xT, dMateriaPrima[Matéria-Prima])
+			VAR _xV = MAXX(_xT, [@v])
+			VAR _lim = [Limite OPs Abaixo Segurança]
+			RETURN IF(_xV > _lim, MIN(1, DIVIDE(_xV - _lim, _lim)))
+		isHidden
+		formatString: 0.00
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 80a25e5c-5313-554c-b928-b04f61e34f18
+
+	/// Alerta 4 (MP abaixo do estoque de segurança): descrição dinâmica da ocorrência.
+	measure 'A4 Texto' =
+			VAR _xT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dMateriaPrima[Matéria-Prima]), "@v", [OPs Abaixo da Segurança %]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _xN = MAXX(_xT, dMateriaPrima[Matéria-Prima])
+			VAR _xV = MAXX(_xT, [@v])
+			VAR _n = CALCULATE([OPs Abaixo da Segurança], dMateriaPrima[Matéria-Prima] = _xN)
+			RETURN _xN & ": " & FORMAT(_xV, "0.0%", "pt-BR") & " das OPs (" & FORMAT(_n, "#,0", "pt-BR") & ") com estoque abaixo da segurança."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: ca3ed9f9-8fa2-50b8-9bb2-524b57fc0ba6
+
+	/// Alerta 4 (MP abaixo do estoque de segurança): ação sugerida.
+	measure 'A4 Ação' = "Rever ponto de pedido e estoque de segurança do material; antecipar reposição."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 704a9f45-6d83-57c1-aebd-7bb99f0ea47a
+
+	/// Alerta 5 (Fornecedor com atraso relevante): desvio normalizado 0–1 em relação ao limite; em branco quando o alerta está inativo.
+	measure 'A5 Desvio' =
+			VAR _fT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dFornecedor[Fornecedor]), "@v", [Fornecedor no Prazo %]), NOT ISBLANK([@v])), [@v], ASC)
+			VAR _fN = MAXX(_fT, dFornecedor[Fornecedor])
+			VAR _fV = MAXX(_fT, [@v])
+			VAR _meta = [Meta Fornecedor no Prazo]
+			RETURN IF(_fV < _meta, MIN(1, DIVIDE(DIVIDE(_meta - _fV, _meta), 0.5)))
+		isHidden
+		formatString: 0.00
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 3a6efe07-7d60-549a-a4a7-411c60e33aa6
+
+	/// Alerta 5 (Fornecedor com atraso relevante): descrição dinâmica da ocorrência.
+	measure 'A5 Texto' =
+			VAR _fT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dFornecedor[Fornecedor]), "@v", [Fornecedor no Prazo %]), NOT ISBLANK([@v])), [@v], ASC)
+			VAR _fN = MAXX(_fT, dFornecedor[Fornecedor])
+			VAR _fV = MAXX(_fT, [@v])
+			VAR _a = CALCULATE([Atraso Médio Fornecedor (dias)], dFornecedor[Fornecedor] = _fN)
+			VAR _lt = CALCULATE([Lead Time Real (dias)], dFornecedor[Fornecedor] = _fN)
+			RETURN _fN & ": só " & FORMAT(_fV, "0.0%", "pt-BR") & " no prazo, atraso médio de " & FORMAT(_a, "0.0", "pt-BR") & " d e lead time de " & FORMAT(_lt, "0.0", "pt-BR") & " d."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 99b62fef-58c9-503c-9734-1cd60efd2a93
+
+	/// Alerta 5 (Fornecedor com atraso relevante): ação sugerida.
+	measure 'A5 Ação' = "Follow-up do fornecedor, revisar lead time contratado e avaliar fonte alternativa."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: ac353705-805b-50c1-b4a3-57feb637d025
+
+	/// Alerta 6 (Ruptura de estoque): desvio normalizado 0–1 em relação ao limite; em branco quando o alerta está inativo.
+	measure 'A6 Desvio' =
+			VAR _t = [Taxa de Ruptura %]
+			RETURN IF([Rupturas] > 0, MIN(1, DIVIDE(_t, 0.03)))
+		isHidden
+		formatString: 0.00
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 148d868a-3a73-52ba-accf-f68c6950d53b
+
+	/// Alerta 6 (Ruptura de estoque): descrição dinâmica da ocorrência.
+	measure 'A6 Texto' =
+			VAR _xT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dMateriaPrima[Matéria-Prima]), "@v", [Rupturas]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _xN = MAXX(_xT, dMateriaPrima[Matéria-Prima])
+			VAR _xV = MAXX(_xT, [@v])
+			RETURN FORMAT([Rupturas], "#,0", "pt-BR") & " rupturas de MP (" & FORMAT([Taxa de Ruptura %], "0.0%", "pt-BR") & " das OPs). Mais afetada: " & _xN & " (" & FORMAT(_xV, "#,0", "pt-BR") & ")."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 7dbbf04b-3601-587a-8545-618df103ba2f
+
+	/// Alerta 6 (Ruptura de estoque): ação sugerida.
+	measure 'A6 Ação' = "Tratar rupturas como prioridade de PCP: reposição emergencial e revisão de parâmetros."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 9a17a2a9-a32e-59c3-b782-1b9b47913b85
+
+	/// Alerta 7 (OTIF abaixo da meta): desvio normalizado 0–1 em relação ao limite; em branco quando o alerta está inativo.
+	measure 'A7 Desvio' =
+			VAR _meta = [Meta OTIF]
+			RETURN IF(NOT ISBLANK([OTIF %]) && [OTIF %] < _meta, MIN(1, DIVIDE(DIVIDE(_meta - [OTIF %], _meta), 0.5)))
+		isHidden
+		formatString: 0.00
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 5a7e7b66-c937-5561-8f9c-71d055a65dcf
+
+	/// Alerta 7 (OTIF abaixo da meta): descrição dinâmica da ocorrência.
+	measure 'A7 Texto' = "OTIF em " & FORMAT([OTIF %], "0.0%", "pt-BR") & " vs meta de " & FORMAT([Meta OTIF], "0%", "pt-BR") & ": " & FORMAT([Entregas Atrasadas %], "0.0%", "pt-BR") & " das OPs com atraso e " & FORMAT([Falha In-Full % (inferida)], "0.0%", "pt-BR") & " com falha de quantidade."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: e3bd5927-4c50-53bc-920e-d9ced6a4156b
+
+	/// Alerta 7 (OTIF abaixo da meta): ação sugerida.
+	measure 'A7 Ação' =
+			VAR _sT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dCliente[Segmento]), "@v", [OTIF %]), NOT ISBLANK([@v])), [@v], ASC)
+			VAR _sN = MAXX(_sT, dCliente[Segmento])
+			VAR _sV = MAXX(_sT, [@v])
+			RETURN "Segmento mais afetado: " & _sN & " (" & FORMAT(_sV, "0.0%", "pt-BR") & "). Revisar promessa de prazo e sequenciamento."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 299857df-7eed-518d-83d4-343f05411061
+
+	/// Alerta 8 (Custo da não qualidade elevado): desvio normalizado 0–1 em relação ao limite; em branco quando o alerta está inativo.
+	measure 'A8 Desvio' =
+			VAR _lim = [Limite CNQ]
+			VAR _v = [CNQ % do Custo]
+			RETURN IF(_v > _lim, MIN(1, DIVIDE(DIVIDE(_v - _lim, _lim), 0.5)))
+		isHidden
+		formatString: 0.00
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: c4aa9adc-17a5-50e5-9085-60f093bfd6d3
+
+	/// Alerta 8 (Custo da não qualidade elevado): descrição dinâmica da ocorrência.
+	measure 'A8 Texto' =
+			VAR _pT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dProduto[Produto]), "@v", [Custo Não Qualidade]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _pN = MAXX(_pT, dProduto[Produto])
+			VAR _pV = MAXX(_pT, [@v])
+			RETURN "CNQ de " & IF(ABS([Custo Não Qualidade]) >= 1000000, "R$ " & FORMAT(DIVIDE([Custo Não Qualidade], 1000000), "0.00", "pt-BR") & " Mi", "R$ " & FORMAT(DIVIDE([Custo Não Qualidade], 1000), "#,0", "pt-BR") & " mil") & " (" & FORMAT([CNQ % do Custo], "0.00%", "pt-BR") & " do custo). Maior peso: " & _pN & " (" & IF(ABS(_pV) >= 1000000, "R$ " & FORMAT(DIVIDE(_pV, 1000000), "0.00", "pt-BR") & " Mi", "R$ " & FORMAT(DIVIDE(_pV, 1000), "#,0", "pt-BR") & " mil") & ")."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 6166095f-cb58-53a9-9a76-d8e65116033c
+
+	/// Alerta 8 (Custo da não qualidade elevado): ação sugerida.
+	measure 'A8 Ação' = "Priorizar o produto de maior CNQ e a causa: " & [Principal Causa Defeito] & "."
+		isHidden
+		displayFolder: 12 | Alertas\Componentes
+		lineageTag: 63fd68e5-72f7-5102-acb6-c2ed6a1d21e7
+
+	/// Índice de prioridade 0–100 do alerta = 100 × Peso de criticidade × (0,4 + 0,6 × Desvio normalizado). Em branco quando o alerta está inativo no contexto filtrado.
+	measure 'Alerta Índice' =
+			VAR _d = SWITCH(SELECTEDVALUE(Alertas[ID]), 1, [A1 Desvio], 2, [A2 Desvio], 3, [A3 Desvio], 4, [A4 Desvio], 5, [A5 Desvio], 6, [A6 Desvio], 7, [A7 Desvio], 8, [A8 Desvio])
+			VAR _peso = SELECTEDVALUE(Alertas[Peso])
+			RETURN IF(NOT ISBLANK(_d), ROUND(100 * _peso * (0.4 + 0.6 * _d), 0))
+		formatString: 0
+		displayFolder: 12 | Alertas
+		lineageTag: ded8bcea-8ced-5845-a600-fc4f19604139
+
+	/// Classe de prioridade do alerta: CRÍTICA (≥ 75), ALTA (≥ 55), MÉDIA (≥ 35) ou BAIXA.
+	measure 'Alerta Prioridade' =
+			VAR _s = [Alerta Índice]
+			RETURN SWITCH(TRUE(), ISBLANK(_s), BLANK(), _s >= 75, "CRÍTICA", _s >= 55, "ALTA", _s >= 35, "MÉDIA", "BAIXA")
+		displayFolder: 12 | Alertas
+		lineageTag: d9d80672-2513-5740-b32d-fe2fd2045b1a
+
+	/// Descrição dinâmica da ocorrência do alerta, sensível aos filtros.
+	measure 'Alerta Ocorrência' = IF(NOT ISBLANK([Alerta Índice]), SWITCH(SELECTEDVALUE(Alertas[ID]), 1, [A1 Texto], 2, [A2 Texto], 3, [A3 Texto], 4, [A4 Texto], 5, [A5 Texto], 6, [A6 Texto], 7, [A7 Texto], 8, [A8 Texto]))
+		displayFolder: 12 | Alertas
+		lineageTag: e1f84dd1-086d-50a0-8237-8d7434bbf31a
+
+	/// Ação sugerida para o alerta.
+	measure 'Alerta Ação' = IF(NOT ISBLANK([Alerta Índice]), SWITCH(SELECTEDVALUE(Alertas[ID]), 1, [A1 Ação], 2, [A2 Ação], 3, [A3 Ação], 4, [A4 Ação], 5, [A5 Ação], 6, [A6 Ação], 7, [A7 Ação], 8, [A8 Ação]))
+		displayFolder: 12 | Alertas
+		lineageTag: bc5ec807-588d-5e53-b6a6-832a19ee3ff3
+
+	/// Quantidade de alertas ativos no contexto filtrado.
+	measure 'Alertas Ativos' = COUNTROWS(FILTER(Alertas, NOT ISBLANK([Alerta Índice]))) + 0
+		formatString: #,0
+		displayFolder: 12 | Alertas
+		lineageTag: e5ebdd61-1e12-5b18-9f9b-74c8270c8fc5
+
+	/// Título dinâmico do painel ATENÇÃO AGORA.
+	measure 'Alertas Título' =
+			VAR _n = [Alertas Ativos]
+			VAR _c = COUNTROWS(FILTER(Alertas, [Alerta Prioridade] IN {"CRÍTICA", "ALTA"})) + 0
+			RETURN "ATENÇÃO AGORA · " & _n & " alertas ativos, " & _c & " de prioridade alta ou crítica"
+		displayFolder: 12 | Alertas
+		lineageTag: 51c08e15-2df9-5bbf-973c-44975a8bb7e7
+
+	/// Narrativa executiva dinâmica em quatro blocos (Observação, Diagnóstico, Impacto, Ação). Descreve associações observadas nos dados, sem afirmar causalidade.
+	measure 'Insight Texto' =
+			VAR _lT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dLinha[Linha]), "@v", [Horas Parada]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _lN = MAXX(_lT, dLinha[Linha])
+			VAR _lV = MAXX(_lT, [@v])
+			VAR _cT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dCausaParada[Causa Parada]), "@v", [Paradas Pareto h]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _cN = MAXX(_cT, dCausaParada[Causa Parada])
+			VAR _cV = MAXX(_cT, [@v])
+			VAR _partL = DIVIDE(_lV, [Horas Parada])
+			VAR _partC = DIVIDE(_cV, [Horas Parada])
+			VAR _pa = [OEE Δ PA p.p.]
+			VAR _obs = "Produção de " & FORMAT([Produção Real], "#,0", "pt-BR") & " un., " & FORMAT([Aderência ao Plano %], "0.0%", "pt-BR") & " do plano (gap de " & FORMAT([Gap Produção], "#,0", "pt-BR") & " un.). OEE em " & FORMAT([OEE %], "0.0%", "pt-BR") & ", " & FORMAT(-[OEE Gap Meta p.p.], "0.0", "pt-BR") & " p.p. abaixo da meta"
+			    & IF(NOT ISBLANK(_pa), " (" & FORMAT(_pa, "+0.0;-0.0", "pt-BR") & " p.p. vs período anterior)", "") & "."
+			VAR _diag = "A maior perda do OEE está em " & [OEE Maior Perda] & ". As OPs com causa " & _cN & " concentram " & FORMAT(_partC, "0%", "pt-BR") & " das horas de parada; a linha com mais horas paradas é " & _lN & " (" & FORMAT(_partL, "0%", "pt-BR") & ")."
+			VAR _imp = "As paradas somam " & FORMAT([Horas Parada], "#,0", "pt-BR") & " h, cerca de " & FORMAT([Impacto Downtime un. (est.)], "#,0", "pt-BR") & " un. não produzidas (estimativa). O custo da não qualidade é de " & IF(ABS([Custo Não Qualidade]) >= 1000000, "R$ " & FORMAT(DIVIDE([Custo Não Qualidade], 1000000), "0.00", "pt-BR") & " Mi", "R$ " & FORMAT(DIVIDE([Custo Não Qualidade], 1000), "#,0", "pt-BR") & " mil") & " e o OTIF está em " & FORMAT([OTIF %], "0.0%", "pt-BR") & "."
+			VAR _acao = "1º reduzir " & _cN & " na " & _lN & "; 2º tratar fornecedores abaixo da meta de prazo (" & [Fornecedores Fora da Meta] & "); 3º revisar a promessa de entrega ao cliente."
+			RETURN SWITCH(SELECTEDVALUE(Insight[Ordem]), 1, _obs, 2, _diag, 3, _imp, 4, _acao)
+		displayFolder: 13 | Narrativa e Títulos
+		lineageTag: aec2c1f7-5d2a-5efd-acc5-5f808ba5cafe
+
+	/// Resumo da base exibido na capa.
+	measure 'Capa Resumo' = "Dados de " & FORMAT(MIN(fProducao[Data]), "mmm/yyyy", "pt-BR") & " a " & FORMAT(MAX(fProducao[Data]), "mmm/yyyy", "pt-BR") & "  ·  " & FORMAT([Nº OPs], "#,0", "pt-BR") & " ordens de produção  ·  " & DISTINCTCOUNT(fProducao[Linha Key]) & " linhas em " & DISTINCTCOUNT(dLinha[Planta]) & " plantas"
+		displayFolder: 13 | Narrativa e Títulos
+		lineageTag: e5704d6f-27a6-5fa3-adaa-5900d6811be4
+
+	/// Subtítulo dinâmico do bloco de OEE.
+	measure 'Título OEE' = "Maior perda: " & [OEE Maior Perda] & "  ·  Meta " & FORMAT([Meta OEE], "0%", "pt-BR") & "  ·  " & [OEE Classificação]
+		displayFolder: 13 | Narrativa e Títulos
+		lineageTag: 0d8937e4-9842-5240-be3c-b33225a0a7b6
+
+	/// Título narrativo do Pareto de paradas.
+	measure 'Título Pareto Paradas' =
+			VAR _cT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dCausaParada[Causa Parada]), "@v", [Paradas Pareto h]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _cN = MAXX(_cT, dCausaParada[Causa Parada])
+			VAR _cV = MAXX(_cT, [@v])
+			RETURN _cN & " lidera as perdas: " & FORMAT(DIVIDE(_cV, [Paradas Pareto h]), "0%", "pt-BR") & " das horas de parada com causa identificada"
+		displayFolder: 13 | Narrativa e Títulos
+		lineageTag: 24c48c78-4297-58a0-8444-4fe6c9e5311f
+
+	/// Título narrativo do Pareto de defeitos.
+	measure 'Título Pareto Defeitos' =
+			VAR _cT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dCausaDefeito[Causa Defeito]), "@v", [CNQ Defeitos]), NOT ISBLANK([@v])), [@v], DESC)
+			VAR _cN = MAXX(_cT, dCausaDefeito[Causa Defeito])
+			VAR _cV = MAXX(_cT, [@v])
+			RETURN "Defeito " & _cN & " é o mais caro: " & IF(ABS(_cV) >= 1000000, "R$ " & FORMAT(DIVIDE(_cV, 1000000), "0.00", "pt-BR") & " Mi", "R$ " & FORMAT(DIVIDE(_cV, 1000), "#,0", "pt-BR") & " mil") & " em não qualidade"
+		displayFolder: 13 | Narrativa e Títulos
+		lineageTag: 326371c0-c70f-5da2-9996-e5bfa67ecd49
+
+	/// Título narrativo do gráfico Produção × Plano.
+	measure 'Título Produção x Plano' = "Produção atinge " & FORMAT([Aderência ao Plano %], "0.0%", "pt-BR") & " do plano (gap de " & FORMAT([Gap Produção], "#,0", "pt-BR") & " un.)"
+		displayFolder: 13 | Narrativa e Títulos
+		lineageTag: 5ac17f21-b2c8-5c65-9206-0867b9ee60ce
+
+	/// Título narrativo do scorecard de fornecedores.
+	measure 'Título Fornecedores' =
+			VAR _fT = TOPN(1, FILTER(ADDCOLUMNS(VALUES(dFornecedor[Fornecedor]), "@v", [Supplier Score]), NOT ISBLANK([@v])), [@v], ASC)
+			VAR _fN = MAXX(_fT, dFornecedor[Fornecedor])
+			VAR _fV = MAXX(_fT, [@v])
+			RETURN "Supplier Scorecard · pior score: " & _fN & " (" & _fV & ")"
+		displayFolder: 13 | Narrativa e Títulos
+		lineageTag: 0702899f-0a16-5061-a341-f02ab7231e64
+
+	/// Título do tooltip de linha.
+	measure 'Título Tooltip Linha' = SELECTEDVALUE(dLinha[Linha], "Seleção atual") & "  ·  principal causa de parada: " & [Principal Causa Parada]
+		displayFolder: 13 | Narrativa e Títulos
+		lineageTag: 2baa5c08-ccb4-5088-93eb-40870f01594a
+
+	/// Linha de contexto do card Produção: variação do último mês vs mês anterior e referência.
+	measure 'KPI Produção Sub' =
+			VAR _d = [Produção Real Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0%;-0.0%", "pt-BR") & " no último mês  ·  ") & "Plano " & FORMAT([Plano], "#,0", "pt-BR")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 6ad10ed7-587b-5e92-9e86-b2f4f41e49d3
+
+	/// Linha de contexto do card Aderência: variação do último mês vs mês anterior e referência.
+	measure 'KPI Aderência Sub' =
+			VAR _d = [Aderência ao Plano % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Meta " & FORMAT([Meta Aderência], "0%", "pt-BR")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 93a75cc1-d2d9-56c4-8f30-4c4e743dec6d
+
+	/// Linha de contexto do card OEE: variação do último mês vs mês anterior e referência.
+	measure 'KPI OEE Sub' =
+			VAR _d = [OEE % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Meta " & FORMAT([Meta OEE], "0%", "pt-BR") & "  " & [OEE Classificação]
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 33a42506-b313-5d03-a382-7d25f8e91916
+
+	/// Linha de contexto do card Disponibilidade: variação do último mês vs mês anterior e referência.
+	measure 'KPI Disponibilidade Sub' =
+			VAR _d = [Disponibilidade % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Maior alavanca do OEE"
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: b7e87a1f-94eb-5a83-bbf8-bbd35c818995
+
+	/// Linha de contexto do card Performance: variação do último mês vs mês anterior e referência.
+	measure 'KPI Performance Sub' =
+			VAR _d = [Performance % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Ritmo vs ciclo padrão"
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: d9cbb9cd-f905-58b5-ae94-247ef8ca4995
+
+	/// Linha de contexto do card Qualidade: variação do último mês vs mês anterior e referência.
+	measure 'KPI Qualidade Sub' =
+			VAR _d = [Qualidade % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "FPY aprox. " & FORMAT([FPY % (aprox.)], "0.0%", "pt-BR")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: eb2278a6-f9e1-5c2a-8f17-058e6564e016
+
+	/// Linha de contexto do card Scrap: variação do último mês vs mês anterior e referência.
+	measure 'KPI Scrap Sub' =
+			VAR _d = [Scrap % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Limite " & FORMAT([Limite Scrap], "0.0%", "pt-BR")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: e6631246-3875-5b48-a63e-0ffaf62a3dde
+
+	/// Linha de contexto do card Retrabalho: variação do último mês vs mês anterior e referência.
+	measure 'KPI Retrabalho Sub' =
+			VAR _d = [Retrabalho % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & FORMAT([Retrabalho], "#,0", "pt-BR") & " un."
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 6c9c6349-0394-506d-b7ad-8491823b8613
+
+	/// Linha de contexto do card Downtime: variação do último mês vs mês anterior e referência.
+	measure 'KPI Downtime Sub' =
+			VAR _d = [Downtime % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Limite " & FORMAT([Limite Downtime], "0%", "pt-BR") & "  ·  " & FORMAT([Horas Parada], "#,0", "pt-BR") & " h"
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 84ee7d75-db2c-5869-84ad-a54aa9b9c415
+
+	/// Linha de contexto do card Horas Parada: variação do último mês vs mês anterior e referência.
+	measure 'KPI Horas Parada Sub' =
+			VAR _d = [Horas Parada Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0%;-0.0%", "pt-BR") & " no último mês  ·  ") & "≈ " & FORMAT([Impacto Downtime un. (est.)], "#,0", "pt-BR") & " un. (est.)"
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 9e7482a4-1016-542b-9f05-c339c80eefd9
+
+	/// Linha de contexto do card OTIF: variação do último mês vs mês anterior e referência.
+	measure 'KPI OTIF Sub' =
+			VAR _d = [OTIF % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Meta " & FORMAT([Meta OTIF], "0%", "pt-BR")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: cce491cb-4dce-5847-aaf1-7a09accbb754
+
+	/// Linha de contexto do card CNQ: variação do último mês vs mês anterior e referência.
+	measure 'KPI CNQ Sub' =
+			VAR _d = [Custo Não Qualidade Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0%;-0.0%", "pt-BR") & " no último mês  ·  ") & FORMAT([CNQ % do Custo], "0.00%", "pt-BR") & " do custo total"
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: ae30e8d9-e8ec-5b14-bad5-71cef82dadbf
+
+	/// Linha de contexto do card Custo Unidade Boa: variação do último mês vs mês anterior e referência.
+	measure 'KPI Custo Unidade Boa Sub' =
+			VAR _d = [Custo por Unidade Boa Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0%;-0.0%", "pt-BR") & " no último mês  ·  ") & "Custo unitário " & FORMAT([Custo Unitário], "#,0.00", "pt-BR")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: f264e73d-7ebd-547f-8792-a87677a9c5b0
+
+	/// Linha de contexto do card Custo Total: variação do último mês vs mês anterior e referência.
+	measure 'KPI Custo Total Sub' =
+			VAR _d = [Custo Total Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0%;-0.0%", "pt-BR") & " no último mês  ·  ") & FORMAT([Nº OPs], "#,0", "pt-BR") & " OPs"
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 4484c253-8473-525c-b3ae-bf9e21bc4bd0
+
+	/// Linha de contexto do card Lead Time: variação do último mês vs mês anterior e referência.
+	measure 'KPI Lead Time Sub' =
+			VAR _d = [Lead Time Real (dias) Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " no último mês  ·  ") & FORMAT([Lead Time Previsto (dias)], "0.0", "pt-BR") & " d previstos"
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: a0777feb-fc75-57e5-9736-7cb12690d092
+
+	/// Linha de contexto do card Fornecedor no Prazo: variação do último mês vs mês anterior e referência.
+	measure 'KPI Fornecedor no Prazo Sub' =
+			VAR _d = [Fornecedor no Prazo % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Meta " & FORMAT([Meta Fornecedor no Prazo], "0%", "pt-BR")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: d039011e-3dce-51b8-9aac-abc00968b4ab
+
+	/// Linha de contexto do card Reprovação MP: variação do último mês vs mês anterior e referência.
+	measure 'KPI Reprovação MP Sub' =
+			VAR _d = [Reprovação MP % Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " p.p." & " no último mês  ·  ") & "Limite " & FORMAT([Limite Reprovação MP], "0%", "pt-BR")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 74368e73-0265-5e8b-a194-53135b85168d
+
+	/// Linha de contexto do card Rupturas: variação do último mês vs mês anterior e referência.
+	measure 'KPI Rupturas Sub' =
+			VAR _d = [Rupturas Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0;-0.0", "pt-BR") & " no último mês  ·  ") & FORMAT([OPs Abaixo da Segurança %], "0.0%", "pt-BR") & " das OPs abaixo da segurança"
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 06e8f6d6-50bb-52c9-bb68-69bd06bf3931
+
+	/// Linha de contexto do card Frete: variação do último mês vs mês anterior e referência.
+	measure 'KPI Frete Sub' =
+			VAR _d = [Frete por Unidade Δ Mês]
+			VAR _seta = IF(_d >= 0, "▲ ", "▼ ")
+			RETURN IF(ISBLANK(_d), "", _seta & FORMAT(_d, "+0.0%;-0.0%", "pt-BR") & " no último mês  ·  ") & "Total " & IF(ABS([Custo Frete]) >= 1000000, "R$ " & FORMAT(DIVIDE([Custo Frete], 1000000), "0.00", "pt-BR") & " Mi", "R$ " & FORMAT(DIVIDE([Custo Frete], 1000), "#,0", "pt-BR") & " mil")
+		displayFolder: 14 | Cards (contexto)
+		lineageTag: 3eb4976c-23fb-593f-95b9-52c85148f7fa
+
+	/// Cor semântica de Aderência: verde na meta, amarelo em atenção, vermelho crítico.
+	measure 'Cor Aderência' =
+			VAR _v = [Aderência ao Plano %]
+			VAR _m = [Meta Aderência]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v >= _m, "#1E9E6A", _v >= _m - 0.03, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 81816545-6a28-58e3-8b59-cbc9ccc0ec42
+
+	/// Cor semântica de OEE: verde na meta, amarelo em atenção, vermelho crítico.
+	measure 'Cor OEE' =
+			VAR _v = [OEE %]
+			VAR _m = [Meta OEE]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v >= _m, "#1E9E6A", _v >= _m - 0.1, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 5cdcfb88-0159-5f46-b688-27a7ee039735
+
+	/// Cor semântica de OTIF: verde na meta, amarelo em atenção, vermelho crítico.
+	measure 'Cor OTIF' =
+			VAR _v = [OTIF %]
+			VAR _m = [Meta OTIF]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v >= _m, "#1E9E6A", _v >= _m - 0.1, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 0eac3ee7-ca42-5200-9c4d-6f3199cbb5fc
+
+	/// Cor semântica de Fornecedor no Prazo: verde na meta, amarelo em atenção, vermelho crítico.
+	measure 'Cor Fornecedor no Prazo' =
+			VAR _v = [Fornecedor no Prazo %]
+			VAR _m = [Meta Fornecedor no Prazo]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v >= _m, "#1E9E6A", _v >= _m - 0.1, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 8e71d667-8aaf-5491-bd39-22c12a1f2394
+
+	/// Cor semântica de Supplier Score: verde na meta, amarelo em atenção, vermelho crítico.
+	measure 'Cor Supplier Score' =
+			VAR _v = [Supplier Score]
+			VAR _m = 75
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v >= _m, "#1E9E6A", _v >= _m - 15, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 56d9a9db-cead-5577-b2af-dccc0844ff35
+
+	/// Cor semântica de Scrap: verde dentro do limite, amarelo próximo, vermelho acima.
+	measure 'Cor Scrap' =
+			VAR _v = [Scrap %]
+			VAR _l = [Limite Scrap]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v <= _l, "#1E9E6A", _v <= _l * 1.15, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 35302bb3-e961-5ae7-99d8-b818644589be
+
+	/// Cor semântica de Downtime: verde dentro do limite, amarelo próximo, vermelho acima.
+	measure 'Cor Downtime' =
+			VAR _v = [Downtime %]
+			VAR _l = [Limite Downtime]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v <= _l, "#1E9E6A", _v <= _l * 1.15, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 735ef9c2-b306-5890-86b1-4976490721f9
+
+	/// Cor semântica de CNQ: verde dentro do limite, amarelo próximo, vermelho acima.
+	measure 'Cor CNQ' =
+			VAR _v = [CNQ % do Custo]
+			VAR _l = [Limite CNQ]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v <= _l, "#1E9E6A", _v <= _l * 1.15, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: e46cf1cd-12fa-5b4a-b1b7-12e1debb62d2
+
+	/// Cor semântica de Reprovação MP: verde dentro do limite, amarelo próximo, vermelho acima.
+	measure 'Cor Reprovação MP' =
+			VAR _v = [Reprovação MP %]
+			VAR _l = [Limite Reprovação MP]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v <= _l, "#1E9E6A", _v <= _l * 1.15, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: c0a8b812-cf50-55f9-a0e6-3386fc846a95
+
+	/// Cor semântica de OPs Abaixo Segurança: verde dentro do limite, amarelo próximo, vermelho acima.
+	measure 'Cor OPs Abaixo Segurança' =
+			VAR _v = [OPs Abaixo da Segurança %]
+			VAR _l = [Limite OPs Abaixo Segurança]
+			RETURN SWITCH(TRUE(), ISBLANK(_v), "#A7B1BD", _v <= _l, "#1E9E6A", _v <= _l * 1.2, "#E0A100", "#D64545")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: ba65460f-1e8f-5611-9021-92a7eee9852a
+
+	/// Cor neutra (azul industrial) para textos de contexto.
+	measure 'Cor Neutra' = "#1E2D3D"
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: e9e6b417-52d0-595b-8c09-68eb85d38e0f
+
+	/// Cor do status de estoque.
+	measure 'Cor Status Estoque' = SWITCH([Status Estoque], "CRÍTICO", "#D64545", "ATENÇÃO", "#E0A100", "SAUDÁVEL", "#1E9E6A", "EXCESSO", "#2F6FB5", "#A7B1BD")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: df7849f2-81b5-534d-9662-3b702a2de726
+
+	/// Cor da classe de prioridade do alerta.
+	measure 'Cor Prioridade' = SWITCH([Alerta Prioridade], "CRÍTICA", "#D64545", "ALTA", "#FF6A00", "MÉDIA", "#E0A100", "BAIXA", "#A7B1BD")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: cc31f900-8e14-5353-b5e2-b78b2c36726c
+
+	/// Cor do gap de produção: vermelho quando negativo.
+	measure 'Cor Gap' = IF([Gap Produção] < 0, "#D64545", "#1E9E6A")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 1e40c7bc-7f54-5843-8b2e-1731d6a1ada7
+
+	/// Fundo do heatmap Linha × Turno: desvio do OEE da célula em relação ao OEE da seleção (verde ≥ +1 p.p.; neutro ±1; amarelo até −2,5; vermelho abaixo).
+	measure 'Cor Heat OEE' =
+			VAR _v = [OEE %]
+			VAR _ref = CALCULATE([OEE %], ALLSELECTED(dLinha), ALLSELECTED(dTurno))
+			VAR _d = (_v - _ref) * 100
+			RETURN SWITCH(TRUE(), ISBLANK(_v), BLANK(), _d >= 1, "#CFEBDD", _d >= -1, "#F3F6F9", _d >= -2.5, "#FBE9B8", "#F5C1BC")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 6ef52362-8df3-5ae2-9785-804d740dbefe
+
+	/// Fundo do heatmap Linha × Causa de defeito: intensidade do CNQ da célula relativa à maior célula da seleção (5 faixas de laranja).
+	measure 'Cor Heat Defeito' =
+			VAR _v = [CNQ Defeitos]
+			VAR _max = MAXX(CROSSJOIN(ALLSELECTED(dLinha[Linha]), ALLSELECTED(dCausaDefeito[Causa Defeito])), [CNQ Defeitos])
+			VAR _r = DIVIDE(_v, _max)
+			RETURN SWITCH(TRUE(), ISBLANK(_v), BLANK(), _r >= 0.9, "#FF8A3D", _r >= 0.75, "#FFAE78", _r >= 0.6, "#FFCDA8", _r >= 0.45, "#FFE6D3", "#FFFFFF")
+		isHidden
+		displayFolder: 15 | Cores (formatação)
+		lineageTag: 32065cc2-5ff1-5978-835b-800d9d818d85
+
+	/// Sparkline SVG do OEE mensal no contexto (linha + último ponto destacado). Gerado dinamicamente a partir das medidas.
+	measure 'Sparkline OEE' =
+			VAR _t = FILTER(ADDCOLUMNS(VALUES(dCalendario[AnoMês Num]), "@v", [OEE %]), NOT ISBLANK([@v]))
+			VAR _n = COUNTROWS(_t)
+			VAR _min = MINX(_t, [@v])
+			VAR _max = MAXX(_t, [@v])
+			VAR _rng = IF(_max = _min, 1, _max - _min)
+			VAR _i = ADDCOLUMNS(_t, "@i", VAR _m = dCalendario[AnoMês Num] RETURN COUNTROWS(FILTER(_t, dCalendario[AnoMês Num] <= _m)))
+			VAR _xy = ADDCOLUMNS(_i, "@x", 3 + ([@i] - 1) * DIVIDE(114, _n - 1), "@y", 21 - DIVIDE([@v] - _min, _rng) * 18)
+			VAR _pts = CONCATENATEX(_xy, FORMAT([@x], "0.0", "en-US") & "," & FORMAT([@y], "0.0", "en-US"), " ", [@i], ASC)
+			VAR _ult = FILTER(_xy, [@i] = _n)
+			VAR _cx = FORMAT(MAXX(_ult, [@x]), "0.0", "en-US")
+			VAR _cy = FORMAT(MAXX(_ult, [@y]), "0.0", "en-US")
+			RETURN IF(_n > 1,
+			    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 24' width='120' height='24'>"
+			    & "<polyline fill='none' stroke='%23A7B1BD' stroke-width='1.5' stroke-linejoin='round' points='" & _pts & "'/>"
+			    & "<circle cx='" & _cx & "' cy='" & _cy & "' r='2.6' fill='%23FF6A00'/></svg>")
+		displayFolder: 16 | SVG
+		lineageTag: accc85f1-dafe-55d3-bb81-eeb4566d6324
+		dataCategory: ImageUrl
+
+	/// Bullet SVG: barra do OEE contra a meta (traço vertical) em escala de 50% a 100%.
+	measure 'Barra OEE vs Meta' =
+			VAR _v = [OEE %]
+			VAR _w = MAX(0, MIN(1, DIVIDE(_v - 0.5, 0.5))) * 116
+			VAR _mx = 2 + MAX(0, MIN(1, DIVIDE([Meta OEE] - 0.5, 0.5))) * 116
+			VAR _cor = SUBSTITUTE([Cor OEE], "#", "%23")
+			RETURN IF(NOT ISBLANK(_v),
+			    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 24' width='120' height='24'>"
+			    & "<rect x='2' y='8' width='116' height='8' rx='4' fill='%23E9EEF3'/>"
+			    & "<rect x='2' y='8' width='" & FORMAT(_w, "0.0", "en-US") & "' height='8' rx='4' fill='" & _cor & "'/>"
+			    & "<rect x='" & FORMAT(_mx, "0.0", "en-US") & "' y='4' width='2' height='16' fill='%231E2D3D'/></svg>")
+		displayFolder: 16 | SVG
+		lineageTag: a3591411-5b2e-5814-a094-0844f80bd259
+		dataCategory: ImageUrl
+
+	column '_'
+		dataType: string
+		isHidden
+		lineageTag: e1444e3c-87de-5d2b-ad3e-29d07004fad7
+		summarizeBy: none
+		sourceColumn: _
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Medidas = m
+		mode: import
+		source =
+				let
+					Fonte = #table(type table [_ = text], {})
+				in
+					Fonte
+

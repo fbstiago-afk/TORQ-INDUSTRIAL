@@ -1,0 +1,35 @@
+/// Dimensão de causa principal de parada da OP.
+table dCausaParada
+	lineageTag: 89f9e7fa-4214-504c-9ddf-75e2b928a4cd
+
+	/// Causa principal de parada registrada na OP.
+	column 'Causa Parada'
+		dataType: string
+		isKey
+		lineageTag: 6ee7d352-f824-5a43-80b4-4cdd47f09922
+		summarizeBy: none
+		sourceColumn: Causa Parada
+
+		annotation SummarizationSetBy = Automatic
+
+	/// 1 quando há causa identificada; 0 para 'Sem parada relevante'.
+	column Relevante
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f16c00a7-1ac6-544a-88c4-d71ac5d8ed10
+		summarizeBy: none
+		sourceColumn: Relevante
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCausaParada = m
+		mode: import
+		source =
+				let
+					Fonte = Table.Distinct(Table.SelectColumns(Base, {"causa_parada"})),
+					Renomeadas = Table.RenameColumns(Fonte, {{"causa_parada", "Causa Parada"}}),
+					Relevante = Table.AddColumn(Renomeadas, "Relevante", each if [Causa Parada] = "Sem parada relevante" then 0 else 1, Int64.Type)
+				in
+					Relevante
+
