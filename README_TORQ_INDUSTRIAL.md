@@ -1,5 +1,12 @@
 # TORQ INDUSTRIAL — Industrial Performance & Supply Chain Control Tower
 
+<!-- portfolio-link:start -->
+[![Ver no portfólio](https://img.shields.io/badge/Ver%20o%20painel%20no%20portf%C3%B3lio-Bocardi%20Data-6C3BAA?style=for-the-badge)](https://bocardidata.base44.app/ProjectDetail?id=torq-industrial)
+
+> 🔗 **Quer ver o visual do Power BI?** Acesse a página do projeto no portfólio: **[https://bocardidata.base44.app/ProjectDetail?id=torq-industrial](https://bocardidata.base44.app/ProjectDetail?id=torq-industrial)**
+<!-- portfolio-link:end -->
+
+
 *From Factory Data to Operational Decisions.* Case de portfólio de Business Intelligence com empresa e dados fictícios.
 
 ## 1. Objetivo
